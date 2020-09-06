@@ -17,6 +17,12 @@
 
     window.fetch(url)
       .then(response => response.json())
+      .then(response => {
+          if (response.code && response.code >= 400 && response.message) {
+            throw new Error(response.message);
+          }
+          return response
+      })
       .then(findClosestSensor)
       .then(updateWithSensor)
       .catch(purpleError)
@@ -191,7 +197,9 @@
   }
 
   function purpleError(error) {
+    const desc = document.getElementById("desc")
     console.error("Purple Air Error: ", error)
-    out.innerHTML = "idk how purple air evens, m8"
+    out.innerHTML = "idk how purple air evens, m8";
+    desc.innerHTML = error;
   }
 })();
