@@ -58,3 +58,11 @@ body.very-hazardous {
 a {
 	color: inherit;
 }
+
+
+#about {
+	position: absolute;
+	bottom: 1em;
+	left: 1em;
+	font-size: 0.8em;
+}
