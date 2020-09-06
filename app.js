@@ -45,14 +45,16 @@
     const aqi = lrapaAQIFromPM(pm25)
 
     const distance = Math.round(closestSensor.distance * 10) / 10
+    const time = (new Date()).toLocaleTimeString()
 
     out.innerHTML = `AQI is ${aqi}`
     desc.innerHTML = getAQIDescription(aqi)
     msg.innerHTML = getAQIMessage(aqi)
-    sensorInfo.innerHTML = `From a sensor ${distance}km away`
+    sensorInfo.innerHTML = `From a sensor ${distance}km away at ${time}`
 
     body.classList.remove(...body.classList)
     body.classList.add(getAQIClass(aqi))
+    setTimeout(() => updateWithSensor(closestSensor), 60000);
   }
 
   function findClosestSensor(data) {
