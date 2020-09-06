@@ -1,17 +1,18 @@
 (() => {
   window.addEventListener("load", getLocation)
 
-  let out;
   let coord;
   let closestSensor;
 
   function getLocation() {
-    out = document.getElementById("aqi")
+    announce("Finding you")
     navigator.geolocation.getCurrentPosition(located, unsupported)
   }
 
   function located(position) {
     coord = position.coords
+
+    announce("Finding nearby sensors")
 
     const url = "https://www.purpleair.com/data.json"
 
@@ -29,6 +30,7 @@
   }
 
   function updateWithSensor(sensor) {
+    announce("Getting sensor data")
     const url = `https://www.purpleair.com/json?show=${sensor.id}`
 
     window.fetch(url)
@@ -44,6 +46,9 @@
     const body = document.querySelector("body")
 
     let pm25s = []
+
+    announce("Calculating AQI")
+
     for(const subsensor of sensor.results) {
       pm25s.push(parseFloat(subsensor["PM2_5Value"]))
     }
@@ -54,7 +59,7 @@
     const time = (new Date()).toLocaleTimeString()
     paLink = getPurpleAirLink()
 
-    out.innerHTML = `AQI is ${aqi}`
+    announce(`AQI is ${aqi}`)
     desc.innerHTML = getAQIDescription(aqi)
     msg.innerHTML = getAQIMessage(aqi)
     sensorInfo.innerHTML = `From <a href="${paLink}">a sensor ${distance}km away</a>  at ${time}`
@@ -62,6 +67,11 @@
     body.classList.remove(...body.classList)
     body.classList.add(getAQIClass(aqi))
     setTimeout(() => updateWithSensor(closestSensor), 30000);
+  }
+
+  function announce(message) {
+    	out = document.getElementById("aqi");
+	out.innerHTML=message;
   }
 
   function findClosestSensor(data) {
@@ -193,13 +203,13 @@
   }
 
   function unsupported() {
-    out.innerHTML = "Couldn't find ya or you got an unsupported browser, chief"
+    announce( "Couldn't find ya or you got an unsupported browser, chief");
   }
 
   function purpleError(error) {
     const desc = document.getElementById("desc")
     console.error("Purple Air Error: ", error)
-    out.innerHTML = "idk how purple air evens, m8";
+    announce("idk how purple air evens, m8");
     desc.innerHTML = error;
   }
 })();
