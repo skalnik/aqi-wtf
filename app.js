@@ -46,11 +46,12 @@
 
     const distance = Math.round(closestSensor.distance * 10) / 10
     const time = (new Date()).toLocaleTimeString()
+    paLink = getPurpleAirLink()
 
     out.innerHTML = `AQI is ${aqi}`
     desc.innerHTML = getAQIDescription(aqi)
     msg.innerHTML = getAQIMessage(aqi)
-    sensorInfo.innerHTML = `From a sensor ${distance}km away at ${time}`
+    sensorInfo.innerHTML = `From <a href="${paLink}">a sensor ${distance}km away</a>  at ${time}`
 
     body.classList.remove(...body.classList)
     body.classList.add(getAQIClass(aqi))
@@ -99,6 +100,10 @@
             (1 - Math.cos((coord2.longitude - coord1.longitude) * p))/2
 
     return 12742 * Math.asin(Math.sqrt(a))
+  }
+
+  function getPurpleAirLink() {
+    return `https://www.purpleair.com/map?opt=1/i/mAQI/a10/cC4&select=${closestSensor.id}#14/${coord.latitude}/${coord.longitude}`
   }
 
   function lrapaAQIFromPM(pm) {
