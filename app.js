@@ -16,12 +16,13 @@
     const url = "https://www.purpleair.com/data.json"
 
     window.fetch(url)
-      .then( response =>    response.json() )
+      .then(response => response.json())
       .then(response => {
           if (response.code && response.code >= 400 && response.message) {
             throw new Error(response.message);
           }
-          return response})
+          return response
+      })
       .then(findClosestSensor)
       .then(updateWithSensor)
       .catch(purpleError)
