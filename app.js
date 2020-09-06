@@ -5,11 +5,14 @@
   let closestSensor;
 
   function getLocation() {
+    announce("Finding you")
     navigator.geolocation.getCurrentPosition(located, unsupported)
   }
 
   function located(position) {
     coord = position.coords
+
+    announce("Finding nearby sensors")
 
     const url = "https://www.purpleair.com/data.json"
 
@@ -27,6 +30,7 @@
   }
 
   function updateWithSensor(sensor) {
+    announce("Getting sensor data")
     const url = `https://www.purpleair.com/json?show=${sensor.id}`
 
     window.fetch(url)
@@ -42,6 +46,9 @@
     const body = document.querySelector("body")
 
     let pm25s = []
+
+    announce("Calculating AQI")
+
     for(const subsensor of sensor.results) {
       pm25s.push(parseFloat(subsensor["PM2_5Value"]))
     }
