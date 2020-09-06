@@ -1,28 +1,18 @@
 (() => {
   window.addEventListener("load", getLocation)
 
-  const url = "https://www.purpleair.com/data.json"
   let out;
   let coord;
 
   function getLocation() {
-    out = document.getElementById("output")
+    out = document.getElementById("aqi")
     navigator.geolocation.getCurrentPosition(located, unsupported)
   }
 
   function located(position) {
     coord = position.coords
-    const nwCoord = {
-      latitude: coord.latitude + 0.01,
-      longitude: coord.longitude + 0.15
-    }
-    const seCoord = {
-      latitude: coord.latitude - 0.01,
-      longitude: coord.longitude - 0.15
-    }
 
-    out.innerHTML = `nw: [${nwCoord.latitude}, ${nwCoord.longitude}] <br /> se: [${seCoord.latitude}, ${seCoord.longitude}]`
-
+    const url = "https://www.purpleair.com/data.json"
 
     window.fetch(url)
       .then(response => response.json())
@@ -32,11 +22,25 @@
   }
 
   function updateWithSensor(sensor) {
-    
+    const url = `https://www.purpleair.com/json?show=${sensor.id}`
+
+    window.fetch(url)
+      .then(response => response.json())
+      .then(updateAQI)
+      .catch(purpleError)
+  }
+
+  function updateAQI(sensor) {
+    let pm25s = []
+    for(const subsensor of sensor.results) {
+      pm25s.push(parseFloat(subsensor["PM2_5Value"]))
+    }
+    let pm25 = (pm25s.reduce((a, b) => a + b)) / pm25s.length
+
+    out.innerHTML = `AQI from nearest sensor: ${lrapaAQIFromPM(pm25)}`
   }
 
   function findClosestSensor(data) {
-    console.log(data)
     let sensors = parsePurpleAirData(data)
 
     for(const sensor of sensors) {
@@ -58,7 +62,6 @@
     fields["latitude"] = json.fields.findIndex(e => e === "Lat")
     fields["longitude"] = json.fields.findIndex(e => e === "Lon")
     fields["id"] = json.fields.findIndex(e => e === "ID")
-    console.log("Alright, computed fields", fields)
     for(const sensor of json.data) {
       if(sensor[fields["indoor"]] === 0) {
         sensors.push({
@@ -80,6 +83,82 @@
             (1 - Math.cos((coord2.longitude - coord1.longitude) * p))/2
 
     return 12742 * Math.asin(Math.sqrt(a))
+  }
+
+  function lrapaAQIFromPM(pm) {
+    return aqiFromPM(0.5 * pm - 0.66)
+  }
+
+  function aqiFromPM(pm) {
+    if (isNaN(pm)) return "-";
+    if (pm == undefined) return "-";
+    if (pm < 0) return pm;
+    if (pm > 1000) return "-";
+
+    if (pm > 350.5) {
+      return calcAQI(pm, 500, 401, 500, 350.5);
+    } else if (pm > 250.5) {
+      return calcAQI(pm, 400, 301, 350.4, 250.5);
+    } else if (pm > 150.5) {
+      return calcAQI(pm, 300, 201, 250.4, 150.5);
+    } else if (pm > 55.5) {
+      return calcAQI(pm, 200, 151, 150.4, 55.5);
+    } else if (pm > 35.5) {
+      return calcAQI(pm, 150, 101, 55.4, 35.5);
+    } else if (pm > 12.1) {
+      return calcAQI(pm, 100, 51, 35.4, 12.1);
+    } else if (pm >= 0) {
+      return calcAQI(pm, 50, 0, 12, 0);
+    } else {
+      return undefined;
+    }
+  }
+
+  function calcAQI(Cp, Ih, Il, BPh, BPl) {
+    var a = (Ih - Il);
+    var b = (BPh - BPl);
+    var c = (Cp - BPl);
+    return Math.round((a/b) * c + Il);
+  }
+
+  function getAQIDescription(aqi) {
+    if (aqi >= 401) {
+      return 'Hazardous';
+    } else if (aqi >= 301) {
+      return 'Hazardous';
+    } else if (aqi >= 201) {
+      return 'Very Unhealthy';
+    } else if (aqi >= 151) {
+      return 'Unhealthy';
+    } else if (aqi >= 101) {
+      return 'Unhealthy for Sensitive Groups';
+    } else if (aqi >= 51) {
+      return 'Moderate';
+    } else if (aqi >= 0) {
+      return 'Good';
+    } else {
+      return undefined;
+    }
+  }
+
+  function getAQIMessage(aqi) {
+    if (aqi >= 401) {
+      return '>401: Health alert: everyone may experience more serious health effects';
+    } else if (aqi >= 301) {
+      return '301-400: Health alert: everyone may experience more serious health effects';
+    } else if (aqi >= 201) {
+      return '201-300: Health warnings of emergency conditions. The entire population is more likely to be affected. ';
+    } else if (aqi >= 151) {
+      return '151-200: Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects.';
+    } else if (aqi >= 101) {
+      return '101-150: Members of sensitive groups may experience health effects. The general public is not likely to be affected.';
+    } else if (aqi >= 51) {
+      return '51-100: Air quality is acceptable; however, for some pollutants there may be a moderate health concern for a very small number of people who are unusually sensitive to air pollution.';
+    } else if (aqi >= 0) {
+      return '0-50: Air quality is considered satisfactory, and air pollution poses little or no risk';
+    } else {
+      return undefined;
+    }
   }
 
   function unsupported() {
