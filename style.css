@@ -3,7 +3,6 @@ body {
 }
 
 h1, h2, h3, h4 {
-  display: flex;
   justify-content: center;
   text-align: center;
 }
