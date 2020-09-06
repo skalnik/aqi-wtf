@@ -103,7 +103,7 @@
   }
 
   function getPurpleAirLink() {
-    return `https://www.purpleair.com/map?opt=1/i/mAQI/a10/cC4&select=${closestSensor.id}#14/${coord.latitude}/${coord.longitude}`
+    return `https://www.purpleair.com/map?opt=1/i/mAQI/a0/cC1&select=${closestSensor.id}#14/${coord.latitude}/${coord.longitude}`
   }
 
   function aqanduAQIFromPM(pm) {
