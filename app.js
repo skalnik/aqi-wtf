@@ -42,7 +42,7 @@
       pm25s.push(parseFloat(subsensor["PM2_5Value"]))
     }
     const pm25 = (pm25s.reduce((a, b) => a + b)) / pm25s.length
-    const aqi = lrapaAQIFromPM(pm25)
+    const aqi = aqanduAQIFromPM(pm25)
 
     const distance = Math.round(closestSensor.distance * 10) / 10
     const time = (new Date()).toLocaleTimeString()
@@ -103,11 +103,11 @@
   }
 
   function getPurpleAirLink() {
-    return `https://www.purpleair.com/map?opt=1/i/mAQI/a10/cC4&select=${closestSensor.id}#14/${coord.latitude}/${coord.longitude}`
+    return `https://www.purpleair.com/map?opt=1/i/mAQI/a0/cC1&select=${closestSensor.id}#14/${coord.latitude}/${coord.longitude}`
   }
 
-  function lrapaAQIFromPM(pm) {
-    return aqiFromPM(0.5 * pm - 0.66)
+  function aqanduAQIFromPM(pm) {
+    return aqiFromPM(0.778 * pm + 2.65)
   }
 
   function aqiFromPM(pm) {
