@@ -54,3 +54,7 @@ body.very-hazardous {
   background: #731425;
   color: #FFF;
 }
+
+a {
+	color: inherit;
+}
