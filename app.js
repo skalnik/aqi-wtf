@@ -14,7 +14,7 @@
 
     announce("Finding nearby sensors")
 
-    const url = "https://www.purpleair.com/data.json"
+    const url = "https://www.purpleair.com/data.json?opt=1/mAQI/a10/cC0&fetch=true&fields=,"
 
     window.fetch(url)
       .then(response => response.json())
