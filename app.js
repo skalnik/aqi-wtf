@@ -54,7 +54,7 @@
 
     body.classList.remove(...body.classList)
     body.classList.add(getAQIClass(aqi))
-    setTimeout(() => updateWithSensor(closestSensor), 60000);
+    setTimeout(() => updateWithSensor(closestSensor), 30000);
   }
 
   function findClosestSensor(data) {
