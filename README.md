@@ -9,5 +9,5 @@ sensor, and displays the AQandU adjusted AQI information.
 
 |       Feature             | Support |
 |---------------------------|---------|
-| Local air quality.        |    ✅   |
+| Local air quality         |    ✅   |
 | Bear attacks              |    🚫   |
