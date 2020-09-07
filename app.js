@@ -95,8 +95,10 @@
     fields["latitude"] = json.fields.findIndex(e => e === "Lat")
     fields["longitude"] = json.fields.findIndex(e => e === "Lon")
     fields["id"] = json.fields.findIndex(e => e === "ID")
+    fields["age"] = json.fields.findIndex(e => e === "age")
     for(const sensor of json.data) {
-      if(sensor[fields["indoor"]] === 0) {
+      // Ignore sensors which are either indoor or updated over 5 minutes ago
+      if(sensor[fields["indoor"]] === 0 && sensor[fields["age"]] < 5) {
         sensors.push({
           id: sensor[fields["id"]],
           latitude: sensor[fields["latitude"]],
