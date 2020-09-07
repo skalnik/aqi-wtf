@@ -185,7 +185,9 @@
   }
 
   function getAQIMessage(aqi) {
-    if (aqi >= 401) {
+    if (aqi == 420) {
+      return 'Blaze it! Everyone may experience more serious health effects';
+    } else if (aqi >= 401) {
       return 'Health alert: everyone may experience more serious health effects';
     } else if (aqi >= 301) {
       return 'Health alert: everyone may experience more serious health effects';
