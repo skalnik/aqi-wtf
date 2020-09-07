@@ -14,6 +14,18 @@
 
     announce("Finding nearby sensors")
 
+
+    store = window.localStorage;
+    const sensorsJson = store.getItem('sensors');
+
+
+    if (sensorsJson) {
+      sensors = JSON.parse(sensorsJson)
+      sensor = findClosestSensor(sensors)
+      updateWithSensor(sensor)
+    }
+    else {    
+
     const url = "https://www.purpleair.com/data.json?opt=1/mAQI/a10/cC0&fetch=true&fields=,"
 
     window.fetch(url)
@@ -24,9 +36,11 @@
           }
           return response
       })
+      .then(parsePurpleAirData)
       .then(findClosestSensor)
       .then(updateWithSensor)
       .catch(purpleError)
+	}
   }
 
   function updateWithSensor(sensor) {
@@ -74,9 +88,7 @@
 	out.innerHTML=message;
   }
 
-  function findClosestSensor(data) {
-    let sensors = parsePurpleAirData(data)
-
+  function findClosestSensor(sensors) {
     for(const sensor of sensors) {
       const distance = distanceBetweenCoords(coord, sensor)
       sensor.distance = distance
@@ -106,8 +118,8 @@
         })
       }
     }
-
-    return sensors
+    store.setItem('sensors',JSON.stringify(sensors));
+    return sensors;
   }
 
   // Adapted from https://stackoverflow.com/a/21623206 because I am a hack
