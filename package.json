@@ -1,6 +1,6 @@
 {
   "scripts": {
     "lint": "prettier *.js *.json",
-    "lint:fix": "prettier *.js *.json"
+    "lint:fix": "prettier --fix *.js *.json"
   }
 }
