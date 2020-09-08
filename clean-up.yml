@@ -1,4 +1,4 @@
-name: prettier
+name: Clean Up
 on: push
 
 jobs:
