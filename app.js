@@ -1,8 +1,15 @@
 (() => {
-  window.addEventListener("load", getLocation);
+  window.addEventListener("load", onStart);
+
 
   let coord;
   let closestSensor;
+
+  function onStart() {
+    document.getElementById("powerwash").addEventListener("click",function() {clearStorage()});
+    getLocation();
+  }
+
 
   function getLocation() {
     announce("Finding you");
@@ -13,10 +20,38 @@
     coord = position.coords;
 
     announce("Finding nearby sensors");
+    loadSensorsFromCacheAndShowAQI();
+  }
+ 
+  function loadSensorsFromCacheAndShowAQI() {
+    try {
+      const cachedSensors = window.localStorage.getItem('sensors');
+      sensor_data = JSON.parse(cachedSensors);
+      if (sensor_data.version !== 1) {
+        throw ("Sensor data is the wrong version");
+      }    
+      if (Date.now() > (sensor_data.timestamp + (86400 * 1000)))  {
+        throw ("Sensor data is more than a day old");
+      }
+      sensor = findClosestSensor(sensor_data.data);
+      updateWithSensor(sensor);
+    }
+    catch(exception) {
+      console.log("Exception while reading cached sensor data");
+      console.log(exception);
+      clearStorage();
+      fetchSensorListAndShowAQI();
+    }
+  }
 
+  function clearStorage() {
+    window.localStorage.removeItem('sensors');
+    console.log("Cleared stored sensor list");
+  }
+
+  function fetchSensorListAndShowAQI() {
     const url =
       "https://www.purpleair.com/data.json?opt=1/mAQI/a10/cC0&fetch=true&fields=,";
-
     window
       .fetch(url)
       .then((response) => response.json())
@@ -26,6 +61,7 @@
         }
         return response;
       })
+      .then(parsePurpleAirData)
       .then(findClosestSensor)
       .then(updateWithSensor)
       .catch(purpleError);
@@ -80,10 +116,8 @@
     sensor.innerHTML = sensorMsg;
   }
 
-  function findClosestSensor(data) {
-    let sensors = parsePurpleAirData(data);
-
-    for (const sensor of sensors) {
+  function findClosestSensor(sensors) {
+    for(const sensor of sensors) {
       const distance = distanceBetweenCoords(coord, sensor);
       sensor.distance = distance;
     }
@@ -112,7 +146,8 @@
         });
       }
     }
-
+    window.localStorage.setItem('sensors',
+    JSON.stringify({ "version": 1, "timestamp": Date.now(), "data": sensors }));
     return sensors;
   }
 
