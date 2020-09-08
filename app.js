@@ -1,8 +1,14 @@
 (() => {
-  window.addEventListener("load", getLocation);
+  window.addEventListener("load", onStart);
+
 
   let coord;
   let closestSensor;
+
+  function onStart() {
+    getLocation();
+  }
+
 
   function getLocation() {
     announce("Finding you");
