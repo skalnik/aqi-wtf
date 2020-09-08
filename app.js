@@ -12,14 +12,14 @@
   }
 
   function getLocation() {
-    announce("Finding you");
+    announceState("Finding you");
     navigator.geolocation.getCurrentPosition(located, unsupported);
   }
 
   function located(position) {
     coord = position.coords;
 
-    announce("Finding nearby sensors");
+    announceState("Finding nearby sensors");
     loadSensorsFromCacheAndShowAQI();
   }
 
@@ -27,6 +27,9 @@
     try {
       const cachedSensors = window.localStorage.getItem("sensors");
       sensor_data = JSON.parse(cachedSensors);
+      if (sensor_data == null) {
+        throw "Sensor data not cached";
+      }
       if (sensor_data.version !== 1) {
         throw "Sensor data is the wrong version";
       }
@@ -67,7 +70,7 @@
   }
 
   function updateWithSensor(sensor) {
-    announce("Getting sensor data");
+    announceState("Getting sensor data");
     const url = `https://www.purpleair.com/json?show=${sensor.id}`;
 
     window
@@ -80,7 +83,7 @@
   function updateAQI(sensor) {
     let pm25s = [];
 
-    announce("Calculating AQI");
+    announceState("Calculating AQI");
 
     for (const subsensor of sensor.results) {
       pm25s.push(parseFloat(subsensor["PM2_5Value"]));
@@ -92,27 +95,41 @@
     const time = new Date().toLocaleTimeString();
     const paLink = getPurpleAirLink();
     const aqiMsg = `AQI is ${aqi} ${getAQIEmoji(aqi)}`;
-    const sensorMsg = `From <a href="${paLink}">a sensor ${distance}km away</a>  at ${time}`;
+    const stateMsg = `From <a href="${paLink}">a sensor ${distance}km away</a>  at ${time}`;
 
-    announce(aqiMsg, getAQIDescription(aqi), getAQIMessage(aqi), sensorMsg);
+    announce(aqiMsg, getAQIDescription(aqi), getAQIMessage(aqi), stateMsg);
 
     const body = document.querySelector("body");
     body.classList.remove(...body.classList);
     body.classList.add(getAQIClass(aqi));
 
-    setTimeout(() => updateWithSensor(closestSensor), 60000);
+    setTimeout(() => getLocation(), 60000);
   }
 
-  function announce(headMsg, descMsg = "", msgMsg = "", sensorMsg = "") {
+  function announce(headMsg, descMsg = "", msgMsg = "", stateMsg = "") {
     const head = document.getElementById("aqi");
     const desc = document.getElementById("desc");
     const msg = document.getElementById("msg");
-    const sensor = document.getElementById("sensor");
+    const state = document.getElementById("state");
 
     head.innerHTML = headMsg;
     desc.innerHTML = descMsg;
     msg.innerHTML = msgMsg;
-    sensor.innerHTML = sensorMsg;
+    state.innerHTML = stateMsg;
+  }
+
+  function announceState(stateMsg) {
+    // If we have something in state already, it means we've previously loaded
+    // some content and don't want to blow away the top level AQI state until
+    // we have something interesting to report
+    if (state.innerHTML !== "") {
+      const state = document.getElementById("state");
+      state.innerHTML = stateMsg;
+    } else {
+      // If state is empty, we have not yet given the breather an AQI reading, so
+      // state is important enough to shove up top in the H1
+      announce(stateMsg);
+    }
   }
 
   function findClosestSensor(sensors) {
