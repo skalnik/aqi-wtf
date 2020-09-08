@@ -40,11 +40,6 @@
   }
 
   function updateAQI(sensor) {
-    const desc = document.getElementById("desc")
-    const msg = document.getElementById("msg")
-    const sensorInfo = document.getElementById("sensor")
-    const body = document.querySelector("body")
-
     let pm25s = []
 
     announce("Calculating AQI")
