@@ -93,9 +93,9 @@
     const time = new Date().toLocaleTimeString();
     const paLink = getPurpleAirLink();
     const aqiMsg = `AQI is ${aqi} ${getAQIEmoji(aqi)}`;
-    const sensorMsg = `From <a href="${paLink}">a sensor ${distance}km away</a>  at ${time}`;
+    const stateMsg = `From <a href="${paLink}">a sensor ${distance}km away</a>  at ${time}`;
 
-    announce(aqiMsg, getAQIDescription(aqi), getAQIMessage(aqi), sensorMsg);
+    announce(aqiMsg, getAQIDescription(aqi), getAQIMessage(aqi), stateMsg);
 
     const body = document.querySelector("body");
     body.classList.remove(...body.classList);
@@ -104,16 +104,16 @@
     setTimeout(() => getLocation(), 60000);
   }
 
-  function announce(headMsg, descMsg = "", msgMsg = "", sensorMsg = "") {
+  function announce(headMsg, descMsg = "", msgMsg = "", stateMsg = "") {
     const head = document.getElementById("aqi");
     const desc = document.getElementById("desc");
     const msg = document.getElementById("msg");
-    const sensor = document.getElementById("sensor");
+    const state = document.getElementById("state");
 
     head.innerHTML = headMsg;
     desc.innerHTML = descMsg;
     msg.innerHTML = msgMsg;
-    sensor.innerHTML = sensorMsg;
+    state.innerHTML = stateMsg;
   }
 
   function findClosestSensor(sensors) {
