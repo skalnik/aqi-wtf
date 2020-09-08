@@ -48,7 +48,7 @@
     announce("Calculating AQI");
 
     for (const subsensor of sensor.results) {
-      pm25s.push(parseFloat(subsensor["PM2_5Value"]));
+      pm25s.push(parseFloat(subsensor['PM2_5Value']));
     }
     const pm25 = pm25s.reduce((a, b) => a + b) / pm25s.length;
     const aqi = aqanduAQIFromPM(pm25);
@@ -63,7 +63,7 @@
 
     const body = document.querySelector("body");
     body.classList.remove(...body.classList);
-    body.classList.add(getAQIClass(aqi));
+    body.classList.add(getAQIClass(aqi))
 
     setTimeout(() => updateWithSensor(closestSensor), 60000);
   }
