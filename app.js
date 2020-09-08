@@ -241,9 +241,9 @@
   }
 
   function purpleError(error) {
-    console.error("Purple Air Error: ", error);
+    console.error("Purple Air Error: ", error)
     announce(
-      "idk how purple air evens, m8",
+      'idk how purple air evens, m8',
       error,
       `<a href="#" onclick="location.reload()">Reload?</a>`
     );
