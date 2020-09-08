@@ -58,7 +58,7 @@
     const distance = Math.round(closestSensor.distance * 10) / 10
     const time = (new Date()).toLocaleTimeString()
     const paLink = getPurpleAirLink()
-    const aqiMsg = `AQI is ${aqi}`
+    const aqiMsg = `${getAQIEmoji(aqi)} AQI is ${aqi}`
     const sensorMsg = `From <a href="${paLink}">a sensor ${distance}km away</a>  at ${time}`
 
     announce(aqiMsg, getAQIDescription(aqi), getAQIMessage(aqi), sensorMsg)
@@ -190,6 +190,27 @@
       return undefined;
     }
   }
+  
+  function getAQIEmoji(aqi) {
+    if (aqi >= 401) {
+      return '&#x2620;'; // ☠
+    } else if (aqi >= 301) {
+      return '&#x1F635;'; // 😵
+    } else if (aqi >= 201) {
+      return '&#x1F922;'; // 🤢
+    } else if (aqi >= 151) {
+      return '&#x1F637;'; // 😷
+    } else if (aqi >= 101) {
+      return '&#x1F641;'; // ☹️
+    } else if (aqi >= 51) {
+      return '&#x1F610;'; // 😐
+    } else if (aqi >= 0) {
+      return '&#x1F600';  // 😀
+    } else {
+      return undefined;
+    }
+  }
+
 
   function getAQIMessage(aqi) {
     if (aqi == 420) {
