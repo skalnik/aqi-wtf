@@ -1,7 +1,7 @@
 {
   "scripts": {
     "lint": "prettier *.js *.json",
-    "lint:fix": "prettier --fix *.js *.json"
+    "lint:fix": "prettier --write *.js *.json"
   },
   "devDependencies": {
     "prettier": "^2.1.1"
