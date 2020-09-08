@@ -1,0 +1,28 @@
+name: Clean Up
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup
+      uses: actions/setup-node@v1
+
+    - name: Install
+      run: npm install
+
+    - name: Run fix
+      run: npm run lint:fix
+
+    - name: Commit changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Apply prettier fixes 🤖
