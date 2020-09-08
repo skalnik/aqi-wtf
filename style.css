@@ -32,34 +32,34 @@ h4 {
 }
 
 body.good {
-  background: #68E143;
+  background-color: #68E143;
 }
 
 body.moderate {
-  background: #FFFF55;
+  background-color: #FFFF55;
 }
 
 body.unhealthy-for-sensitive-groups {
-  background: #EF8533;
+  background-color: #EF8533;
 }
 
 body.unhealthy {
-  background: #EA3324;
+  background-color: #EA3324;
   color: #FFF;
 }
 
 body.very-unhealthy {
-  background: #8C1A4B;
+  background-color: #8C1A4B;
   color: #FFF;
 }
 
 body.hazardous {
-  background: #8C1A4B;
+  background-color: #8C1A4B;
   color: #FFF;
 }
 
 body.very-hazardous {
-  background: #731425;
+  background-color: #731425;
   color: #FFF;
 }
 
