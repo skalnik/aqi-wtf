@@ -58,6 +58,7 @@
 
     announce(aqiMsg, getAQIDescription(aqi), getAQIMessage(aqi), sensorMsg)
 
+    const body = document.querySelector("body")
     body.classList.remove(...body.classList)
     body.classList.add(getAQIClass(aqi))
 
