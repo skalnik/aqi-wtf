@@ -58,7 +58,7 @@
     const distance = Math.round(closestSensor.distance * 10) / 10
     const time = (new Date()).toLocaleTimeString()
     const paLink = getPurpleAirLink()
-    const aqiMsg = `${getAQIEmoji(aqi)} AQI is ${aqi}`
+    const aqiMsg = `AQI is ${aqi} ${getAQIEmoji(aqi)}`
     const sensorMsg = `From <a href="${paLink}">a sensor ${distance}km away</a>  at ${time}`
 
     announce(aqiMsg, getAQIDescription(aqi), getAQIMessage(aqi), sensorMsg)
