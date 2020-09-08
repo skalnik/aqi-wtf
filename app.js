@@ -12,14 +12,14 @@
 
 
   function getLocation() {
-    announce("Finding you");
+    announceState("Finding you");
     navigator.geolocation.getCurrentPosition(located, unsupported);
   }
 
   function located(position) {
     coord = position.coords;
 
-    announce("Finding nearby sensors");
+    announceState("Finding nearby sensors");
     loadSensorsFromCacheAndShowAQI();
   }
  
@@ -68,7 +68,7 @@
   }
 
   function updateWithSensor(sensor) {
-    announce("Getting sensor data");
+    announceState("Getting sensor data");
     const url = `https://www.purpleair.com/json?show=${sensor.id}`;
 
     window
@@ -81,7 +81,7 @@
   function updateAQI(sensor) {
     let pm25s = [];
 
-    announce("Calculating AQI");
+    announceState("Calculating AQI");
 
     for (const subsensor of sensor.results) {
       pm25s.push(parseFloat(subsensor["PM2_5Value"]));
@@ -114,6 +114,20 @@
     desc.innerHTML = descMsg;
     msg.innerHTML = msgMsg;
     state.innerHTML = stateMsg;
+  }
+  
+  function announceState(stateMsg) {
+    // If we have something in state already, it means we've previously loaded
+    // some content and don't want to blow away the top level AQI state until
+    // we have something interesting to report
+    if (state.innerHTML !== "") { 
+      const state = document.getElementById("state");
+      state.innerHTML = stateMsg;
+    } else {
+      // If state is empty, we have not yet given the breather an AQI reading, so 
+      // state is important enough to shove up top in the H1
+      announce(stateMsg);
+    }
   }
 
   function findClosestSensor(sensors) {
