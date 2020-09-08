@@ -6,6 +6,7 @@
   let closestSensor;
 
   function onStart() {
+    document.getElementById("powerwash").addEventListener("click",function() {clearStorage()});
     getLocation();
   }
 

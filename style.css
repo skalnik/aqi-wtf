@@ -73,3 +73,10 @@ footer {
   padding: 1em;
   font-size: 0.8em;
 }
+
+#powerwash {
+  opacity: 0.3;
+  float: right;
+  clear: both;
+  padding-right: 1em;
+}
