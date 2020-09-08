@@ -1,15 +1,15 @@
 (() => {
   window.addEventListener("load", onStart);
 
-
   let coord;
   let closestSensor;
 
   function onStart() {
-    document.getElementById("powerwash").addEventListener("click",function() {clearStorage()});
+    document.getElementById("powerwash").addEventListener("click", function () {
+      clearStorage();
+    });
     getLocation();
   }
-
 
   function getLocation() {
     announce("Finding you");
@@ -22,21 +22,20 @@
     announce("Finding nearby sensors");
     loadSensorsFromCacheAndShowAQI();
   }
- 
+
   function loadSensorsFromCacheAndShowAQI() {
     try {
-      const cachedSensors = window.localStorage.getItem('sensors');
+      const cachedSensors = window.localStorage.getItem("sensors");
       sensor_data = JSON.parse(cachedSensors);
       if (sensor_data.version !== 1) {
-        throw ("Sensor data is the wrong version");
-      }    
-      if (Date.now() > (sensor_data.timestamp + (86400 * 1000)))  {
-        throw ("Sensor data is more than a day old");
+        throw "Sensor data is the wrong version";
+      }
+      if (Date.now() > sensor_data.timestamp + 86400 * 1000) {
+        throw "Sensor data is more than a day old";
       }
       sensor = findClosestSensor(sensor_data.data);
       updateWithSensor(sensor);
-    }
-    catch(exception) {
+    } catch (exception) {
       console.log("Exception while reading cached sensor data");
       console.log(exception);
       clearStorage();
@@ -45,7 +44,7 @@
   }
 
   function clearStorage() {
-    window.localStorage.removeItem('sensors');
+    window.localStorage.removeItem("sensors");
     console.log("Cleared stored sensor list");
   }
 
@@ -117,7 +116,7 @@
   }
 
   function findClosestSensor(sensors) {
-    for(const sensor of sensors) {
+    for (const sensor of sensors) {
       const distance = distanceBetweenCoords(coord, sensor);
       sensor.distance = distance;
     }
@@ -146,8 +145,10 @@
         });
       }
     }
-    window.localStorage.setItem('sensors',
-    JSON.stringify({ "version": 1, "timestamp": Date.now(), "data": sensors }));
+    window.localStorage.setItem(
+      "sensors",
+      JSON.stringify({ version: 1, timestamp: Date.now(), data: sensors })
+    );
     return sensors;
   }
 
