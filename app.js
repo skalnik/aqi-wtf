@@ -32,9 +32,14 @@
     catch(exception) {
       console.log("Exception while reading cached sensor data");
       console.log(exception);
-      window.localStorage.removeItem('sensors');
+      clearStorage();
       fetchSensorListAndShowAQI();
     }
+  }
+
+  function clearStorage() {
+    window.localStorage.removeItem('sensors');
+    console.log("Cleared stored sensor list");
   }
 
   function fetchSensorListAndShowAQI() {
