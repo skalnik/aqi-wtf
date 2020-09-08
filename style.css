@@ -5,7 +5,7 @@ body {
 
 .container {
   display: flex;
-  justify-items: center;
+  justify-content: center;
   align-items: center;
   min-height: 90vh;
 }
@@ -67,7 +67,6 @@ a {
 	color: inherit;
 }
 
-
 footer {
   position: absolute;
   bottom: 0;
@@ -78,7 +77,6 @@ footer {
   width: calc(100% - 2em);
   justify-content: space-between;
   display: flex;
-
 }
 
 #powerwash {
