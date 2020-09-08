@@ -1,9 +1,5 @@
 name: prettier
-on:
-  pull_request:
-    branches: [ $default-branch ]
-  push:
-    branches: [ $default-branch ]
+on: push
 
 jobs:
   prettier:
