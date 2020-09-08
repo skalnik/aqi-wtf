@@ -27,6 +27,9 @@
     try {
       const cachedSensors = window.localStorage.getItem("sensors");
       sensor_data = JSON.parse(cachedSensors);
+      if (sensor_data == null) {
+        throw "Sensor data not cached";
+      }
       if (sensor_data.version !== 1) {
         throw "Sensor data is the wrong version";
       }
