@@ -210,7 +210,7 @@
     } else if (aqi >= 0) {
       return "&#x1F600"; // 😀
     } else {
-      return "";
+      return '';
     }
   }
 
