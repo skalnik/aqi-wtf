@@ -214,7 +214,7 @@
   }
 
   function unsupported() {
-    announce( "Couldn't find ya or you got an unsupported browser, chief");
+    announce("Couldn't locate ya or ya got an unsupported browser, chief");
   }
 
   function purpleError(error) {
