@@ -57,21 +57,28 @@
 
     const distance = Math.round(closestSensor.distance * 10) / 10
     const time = (new Date()).toLocaleTimeString()
-    paLink = getPurpleAirLink()
+    const paLink = getPurpleAirLink()
+    const aqiMsg = `AQI is ${aqi}`
+    const sensorMsg = `From <a href="${paLink}">a sensor ${distance}km away</a>  at ${time}`
 
-    announce(`AQI is ${aqi}`)
-    desc.innerHTML = getAQIDescription(aqi)
-    msg.innerHTML = getAQIMessage(aqi)
-    sensorInfo.innerHTML = `From <a href="${paLink}">a sensor ${distance}km away</a>  at ${time}`
+    announce(aqiMsg, getAQIDescription(aqi), getAQIMessage(aqi), sensorMsg)
 
     body.classList.remove(...body.classList)
     body.classList.add(getAQIClass(aqi))
+
     setTimeout(() => updateWithSensor(closestSensor), 60000);
   }
 
-  function announce(message) {
-    	out = document.getElementById("aqi");
-	out.innerHTML=message;
+  function announce(headMsg, descMsg = "", msgMsg = "", sensorMsg = "") {
+    const head = document.getElementById("aqi")
+    const desc = document.getElementById("desc")
+    const msg = document.getElementById("msg")
+    const sensor = document.getElementById("sensor")
+
+    head.innerHTML = headMsg
+    desc.innerHTML = descMsg
+    msg.innerHTML = msgMsg
+    sensor.innerHTML = sensorMsg
   }
 
   function findClosestSensor(data) {
@@ -211,9 +218,7 @@
   }
 
   function purpleError(error) {
-    const desc = document.getElementById("desc")
     console.error("Purple Air Error: ", error)
-    announce("idk how purple air evens, m8");
-    desc.innerHTML = error;
+    announce("idk how purple air evens, m8", error);
   }
 })();
