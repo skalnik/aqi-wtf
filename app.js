@@ -146,7 +146,7 @@
     state.innerHTML = stateMsg;
   }
 
-  function announceState(stateMsg) {
+  function announceState(stateMsg, descMsg = "") {
     // If we have something in state already, it means we've previously loaded
     // some content and don't want to blow away the top level AQI state until
     // we have something interesting to report
