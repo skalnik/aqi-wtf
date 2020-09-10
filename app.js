@@ -12,7 +12,7 @@
   }
 
   function getLocation() {
-    announceState("Finding you");
+    announceState("Finding you", "We need your browser location to find the nearest PurpleAir sensor. This information never leaves your device. It's not sent to a server.");
     navigator.geolocation.getCurrentPosition(located, unsupported);
   }
 
@@ -160,7 +160,7 @@
     } else {
       // If state is empty, we have not yet given the breather an AQI reading, so
       // state is important enough to shove up top in the H1
-      announce(stateMsg);
+      announce(stateMsg, descMsg);
     }
   }
 
