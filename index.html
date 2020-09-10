@@ -5,7 +5,8 @@
     <script type="text/javascript" src="app.js"></script>
     <link rel="stylesheet" href="style.css" />
     <script async defer data-domain="aqiwtf.com" src="https://plausible.io/js/plausible.js"></script>
-    <meta name='viewport' content='initial-scale=.5, viewport-fit=cover'>
+    <meta name='viewport' content='initial-scale=1, viewport-fit=cover'>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
     <!-- Primary Meta Tags -->
     <meta name="title" content="What the fuck is the AQI">
@@ -32,18 +33,20 @@
   </head>
   <body class="checking">
     <div class="container">
-        <div>
-          <h1 id="aqi">Checking&hellip;</h1>
-          <h2 id="desc"></h2>
-          <h3 id="msg"></h3>
-          <h4 id="state"></h4>
-        </div>
+      <div>
+        <h1 id="aqi">Checking&hellip;</h1>
+        <h2 id="desc"></h2>
+        <h3 id="msg"></h3>
+        <h4 id="state"></h4>
+      </div>
     </div>
     <footer>
       <div>
-        Created by <a href="https://skalnik.com">Mike Skalnik</a> &amp; <a href="https://github.com/skalnik/aqi-wtf/graphs/contributors">friends<a> using data from <a href="https://www.purpleair.com">Purple Air</a>. <a href="https://github.com/skalnik/aqi-wtf">Found a &#x1F41B?</a>
+        Built by <a href="https://skalnik.com">Mike Skalnik</a> &amp; <a href="https://github.com/skalnik/aqi-wtf/graphs/contributors">friends</a> with data from <a href="https://www.purpleair.com">Purple Air</a>. <a href="https://github.com/skalnik/aqi-wtf">Found a &#x1F41B;&#63;</a>
       </div>
-      <a id="powerwash" href="#" onclick="clearStorage(); return false;">Clear stored data.</a>
+      <div class="right">
+        <a id="powerwash" href="#" onclick="clearStorage(); return false;">Clear stored data.</a>
+      </div>
     </footer>
   </body>
 </html>
