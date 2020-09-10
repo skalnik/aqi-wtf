@@ -79,6 +79,11 @@ footer {
   display: flex;
 }
 
+footer div.right {
+  margin-left: 1em;
+  text-align: right;
+}
+
 #powerwash {
   opacity: 0.3;
 }
