@@ -96,11 +96,10 @@
     const distance = Math.round(closestSensor.distance * 10) / 10;
     const time = new Date().toLocaleTimeString();
     const paLink = getPurpleAirLink();
-    const aqiMsg = `AQI is ${aqi} ${getAQIEmoji(aqi)}`;
+    const aqiMsg = `${aqi} ${getAQIEmoji(aqi)}`;
     const stateMsg = `From <a href="${paLink}">a sensor ${distance}km away</a>  at ${time}`;
 
     announce(aqiMsg, getAQIDescription(aqi), getAQIMessage(aqi), stateMsg);
-
     
     // We want to sent the body state after announcing the AQI
     const body = document.querySelector("body");
