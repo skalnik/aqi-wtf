@@ -322,7 +322,11 @@
   }
 
   function unsupported() {
-    announceError("Scooby-Doo, Where Are You!", "We need your browser location to find the nearest PurpleAir sensor. This information never leaves your device. It's not sent to a server.",`You might want to try <a href="https://www.purpleair.com/map?opt=1/i/mAQI/a0/cC1#1/25/-30">PurpleAir's map</a>.`);
+    announceError(
+      "Scooby-Doo, Where Are You!",
+      "We need your browser location to find the nearest PurpleAir sensor. This information never leaves your device. It's not sent to a server.",
+      "You might want to try <a href='https://www.purpleair.com/map?opt=1/i/mAQI/a0/cC1#1/25/-30'>PurpleAir's map</a>."
+    );
   }
 
   function purpleError(error) {
@@ -330,7 +334,7 @@
     announceError(
       "idk how purple air evens, m8",
       error,
-      `<a href="#" onclick="location.reload()">Reload?</a>`
+      "<a href='#' onclick='location.reload()'>Reload?</a>"
     );
   }
 })();
