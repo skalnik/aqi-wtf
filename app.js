@@ -12,7 +12,7 @@
   }
 
   function getLocation() {
-    announceState("Finding you");
+    announceState("Finding you", "We need your browser location to find the nearest PurpleAir sensor. This information never leaves your device. It's not sent to a server.");
     navigator.geolocation.getCurrentPosition(located, unsupported);
   }
 
@@ -146,7 +146,11 @@
     state.innerHTML = stateMsg;
   }
 
-  function announceState(stateMsg) {
+  function announceError(errorMsg, descMsg = "", msgMsg = "") {
+    announce(errorMsg, descMsg, msgMsg);
+  }
+
+  function announceState(stateMsg, descMsg = "") {
     // If we have something in state already, it means we've previously loaded
     // some content and don't want to blow away the top level AQI state until
     // we have something interesting to report
@@ -156,7 +160,7 @@
     } else {
       // If state is empty, we have not yet given the breather an AQI reading, so
       // state is important enough to shove up top in the H1
-      announce(stateMsg);
+      announce(stateMsg, descMsg);
     }
   }
 
@@ -318,15 +322,19 @@
   }
 
   function unsupported() {
-    announce("Couldn't locate ya or ya got an unsupported browser, chief");
+    announceError(
+      "Scooby-Doo, Where Are You!",
+      "We need your browser location to find the nearest PurpleAir sensor. This information never leaves your device. It's not sent to a server.",
+      "You might want to try <a href='https://www.purpleair.com/map?opt=1/i/mAQI/a0/cC1#1/25/-30'>PurpleAir's map</a>."
+    );
   }
 
   function purpleError(error) {
     console.error("Purple Air Error: ", error);
-    announce(
+    announceError(
       "idk how purple air evens, m8",
       error,
-      `<a href="#" onclick="location.reload()">Reload?</a>`
+      "<a href='#' onclick='location.reload()'>Reload?</a>"
     );
   }
 })();

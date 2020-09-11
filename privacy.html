@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>AQI WTF?!</title>
+    <script type="text/javascript" src="app.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <script async defer data-domain="aqiwtf.com" src="https://plausible.io/js/plausible.js"></script>
+    <meta name='viewport' content='initial-scale=1'>
+
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="PRIVACY WTF">
+    <meta name="description" content="What the fuck is privacy policy of AQI.WTF?">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aqiwtf.com/privacy.html">
+    <meta property="og:title" content="PRIVACY WTF">
+    <meta property="og:description" content="What the fuck is privacy policy of AQI.WTF?">
+
+    <!-- Twitter -->
+    <meta property="twitter:url" content="https://aqiwtf.com/privacy.html">
+    <meta property="twitter:title" content="PRIVACY WTF">
+    <meta property="twitter:description" content="What the fuck is privacy policy of AQI.WTF?">
+
+    <!-- Favicon and Friends -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+  </head>
+  <body class="privacy">
+    <a href="/">Back to the app</a>
+
+    <h1>PRIVACY WTF</h1>
+
+    <p>
+      AQI WTF is a non-commercial project. We just want it to be easier for you
+      to know the air quality outside your location.
+    </p>
+
+    <p>
+      We collect limited analytical data about your use of this site with
+      <a href="https://plausible.io/">Plausible.io</a>. You can read about why
+      they're relatively privacy-forward on their website. Of course, if you're
+      using an ad blocker or anti-tracking tool, it's probably blocking Plausible.
+      That's cool.
+    </p>
+
+    <p>
+      This tool uses data from PurpleAir's sensor network, which they make
+      freely available. Your browser will connect to their servers to download a
+      list of all available sensors. Your browser will then ask your device for
+      your current location. Using these two bits of data, AQI WTF will figure
+      out the closest PurpleAir sensor and download air quality information from
+      PurpleAir. While you have the app open, this process will repeat about
+      once a minute, to ensure that you aren't looking at stale air quality
+      information.
+    </p>
+
+    <p>
+      <strong>AQI WTF does not store your current location.</strong>
+      Instead, it asks your browser where you are whenever it needs to show you
+      the current air quality.
+      <strong>
+        AQI WTF does not send your current location to us or any third party.
+      </strong>
+      We do not want to know where you are. We just want you to be able to
+      breathe.
+    </p>
+
+    <p>
+      If you don't want to let AQI WTF know your current location, that's 100%
+      cool with us. But it means that the site won't work.
+    </p>
+
+    <p>
+      <strong>
+        AQI WTF does send a request to PurpleAir once a minute. That request
+        includes the sensor closest to your current location.
+      </strong>
+      In theory, this means PurpleAir could track your location. We don't think
+      they do (or that they care to), but we don't have any kind of a business
+      relationship with them so can't make any promises on their behalf.
+    </p>
+
+    <p>
+      AQI WTF is written in a programming language called JavaScript and runs
+      entirely on your device. If you have questions or concerns about how it
+      works, all the source code for the app is freely available on GitHub at
+      <a href="https://github.com/skalnik/aqi-wtf">https://github.com/skalnik/aqi-wtf</a>.
+    </p>
+  </body>
+</html>
