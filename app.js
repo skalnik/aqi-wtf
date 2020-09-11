@@ -101,8 +101,9 @@
 
     announce(aqiMsg, getAQIDescription(aqi), getAQIMessage(aqi), stateMsg);
 
+    
+    // We want to sent the body state after announcing the AQI
     const body = document.querySelector("body");
-    body.classList.remove(...body.classList);
     body.classList.add(getAQIClass(aqi));
 
     setTimeout(() => getLocation(), 60000);
@@ -139,6 +140,11 @@
     const desc = document.getElementById("desc");
     const msg = document.getElementById("msg");
     const state = document.getElementById("state");
+
+    // We want to clear the body state on any announce
+    const body = document.querySelector("body");
+    body.classList.remove(...body.classList);
+
 
     head.innerHTML = headMsg;
     desc.innerHTML = descMsg;
