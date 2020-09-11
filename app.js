@@ -12,7 +12,10 @@
   }
 
   function getLocation() {
-    announceState("Finding you", "We need your browser location to find the nearest PurpleAir sensor. This information never leaves your device. It's not sent to a server.");
+    announceState(
+      "Finding you",
+      "We need your browser location to find the nearest PurpleAir sensor. This information never leaves your device. It's not sent to a server."
+    );
     navigator.geolocation.getCurrentPosition(located, unsupported);
   }
 
