@@ -104,7 +104,7 @@
     
     // We want to sent the body state after announcing the AQI
     const body = document.querySelector("body");
-    body.classList.add(getAQIClass(aqi));
+    body.classList.add(getAQIClass(aqi), "aqi-result");
 
     setTimeout(() => getLocation(), 60000);
   }
