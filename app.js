@@ -103,7 +103,7 @@
     const stateMsg = `From <a href="${paLink}">a sensor ${distance}km away</a>  at ${time}`;
 
     announce(aqiMsg, getAQIDescription(aqi), getAQIMessage(aqi), stateMsg);
-    
+
     // We want to sent the body state after announcing the AQI
     const body = document.querySelector("body");
     body.classList.add(getAQIClass(aqi), "aqi-result");
@@ -146,7 +146,6 @@
     // We want to clear the body state on any announce
     const body = document.querySelector("body");
     body.classList.remove(...body.classList);
-
 
     head.innerHTML = headMsg;
     desc.innerHTML = descMsg;
