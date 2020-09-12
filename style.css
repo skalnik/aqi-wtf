@@ -29,7 +29,7 @@ h1 {
 }
 
 .aqi-result h1 {
-  font-size: 10em;
+  font-size: min(10em, 25vw);
   margin: 0;
 }
 
