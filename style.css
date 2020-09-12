@@ -107,3 +107,10 @@ footer div.right {
 #powerwash {
   opacity: 0.3;
 }
+
+body.privacy {
+  height: auto;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1em;
+}
