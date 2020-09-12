@@ -152,13 +152,12 @@
   }
 
   function announceError(errorMsg, descMsg = "") {
-    
     if (closestSensor !== null && closestSensor.id !== null) {
       const paLink = getPurpleAirLink();
       callToAction = `<a href='#' onclick='location.reload()'>Reload?</a> Or <a href="${paLink}">try PurpleAir's map</a>.`;
-
     } else {
-      callToAction = "You might want to try <a href='https://www.purpleair.com/map?opt=1/i/mAQI/a0/cC1#1/25/-30'>PurpleAir's map</a>.";
+      callToAction =
+        "You might want to try <a href='https://www.purpleair.com/map?opt=1/i/mAQI/a0/cC1#1/25/-30'>PurpleAir's map</a>.";
     }
 
     announce(errorMsg, descMsg, callToAction);
@@ -322,9 +321,6 @@
 
   function purpleError(error) {
     console.error("Purple Air Error: ", error);
-    announceError(
-      "idk how purple air evens, m8",
-      error
-    );
+    announceError("idk how purple air evens, m8", error);
   }
 })();
