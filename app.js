@@ -102,7 +102,7 @@
     const aqiMsg = `${aqi} ${getAQIEmoji(aqi)}`;
     const stateMsg = `From <a href="${paLink}">a sensor ${distance}km away</a>  at ${time}`;
 
-    announce(aqiMsg, getAQIDescription(aqi), getAQIMessage(aqi), stateMsg);
+    announce(aqiMsg, getAQIDescription(aqi), stateMsg);
 
     // We want to sent the body state after announcing the AQI
     const body = document.querySelector("body");
@@ -137,10 +137,9 @@
     return true;
   }
 
-  function announce(headMsg, descMsg = "", msgMsg = "", stateMsg = "") {
+  function announce(headMsg, descMsg = "", stateMsg = "") {
     const head = document.getElementById("aqi");
     const desc = document.getElementById("desc");
-    const msg = document.getElementById("msg");
     const state = document.getElementById("state");
 
     // We want to clear the body state on any announce
@@ -149,7 +148,6 @@
 
     head.innerHTML = headMsg;
     desc.innerHTML = descMsg;
-    msg.innerHTML = msgMsg;
     state.innerHTML = stateMsg;
   }
 
@@ -306,27 +304,6 @@
     }
   }
 
-  function getAQIMessage(aqi) {
-    if (aqi == 420) {
-      return "Blaze it! Everyone may experience more serious health effects";
-    } else if (aqi >= 401) {
-      return "Health alert: everyone may experience more serious health effects";
-    } else if (aqi >= 301) {
-      return "Health alert: everyone may experience more serious health effects";
-    } else if (aqi >= 201) {
-      return "Health warnings of emergency conditions. The entire population is more likely to be affected. ";
-    } else if (aqi >= 151) {
-      return "Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects.";
-    } else if (aqi >= 101) {
-      return "Members of sensitive groups may experience health effects. The general public is not likely to be affected.";
-    } else if (aqi >= 51) {
-      return "Air quality is acceptable; however, for some pollutants there may be a moderate health concern for a very small number of people who are unusually sensitive to air pollution.";
-    } else if (aqi >= 0) {
-      return "Air quality is considered satisfactory, and air pollution poses little or no risk";
-    } else {
-      return undefined;
-    }
-  }
 
   function unsupported() {
     announceError(
