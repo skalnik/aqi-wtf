@@ -28,8 +28,8 @@ h1 {
 }
 
 .aqi-result h1 {
-  font-size: 25vw;
-  margin: 0.1vw;
+  font-size: 9em;
+  margin: 0;
 }
 
 #aqi-explanation {
