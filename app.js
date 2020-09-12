@@ -253,6 +253,7 @@
   }
 
   function calcAQI(Cp, Ih, Il, BPh, BPl) {
+    // The AQI equation https://forum.airnowtech.org/t/the-aqi-equation/169
     var a = Ih - Il;
     var b = BPh - BPl;
     var c = Cp - BPl;
