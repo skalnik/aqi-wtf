@@ -126,7 +126,6 @@
       "pm2_5_atm",
       "pm10_0_atm",
     ];
-    let busted = true;
 
     for (const pValue of pValues) {
       if (sensor[pValue] !== "0.0") {
@@ -216,7 +215,7 @@
         Math.cos(coord2.latitude * p) *
         (1 - Math.cos((coord2.longitude - coord1.longitude) * p))) /
         2;
-
+    // 12742 is the diameter of earth in km
     return 12742 * Math.asin(Math.sqrt(a));
   }
 
