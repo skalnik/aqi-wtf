@@ -287,7 +287,6 @@
     }
   }
 
-
   function unsupported() {
     announceError(
       "Scooby-Doo, Where Are You!",
