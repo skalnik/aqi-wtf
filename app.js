@@ -99,10 +99,9 @@
     const distance = Math.round(closestSensor.distance * 10) / 10;
     const time = new Date().toLocaleTimeString();
     const paLink = getPurpleAirLink();
-    const aqiMsg = `${aqi} ${getAQIEmoji(aqi)}`;
     const stateMsg = `From <a href="${paLink}">a sensor ${distance}km away</a>  at ${time}`;
 
-    announce(aqiMsg, getAQIDescription(aqi), stateMsg);
+    announce(aqi, "", stateMsg);
 
     // We want to sent the body state after announcing the AQI
     const body = document.querySelector("body");
@@ -269,48 +268,25 @@
   }
 
   function getAQIClass(aqi) {
-    return getAQIDescription(aqi).toLowerCase().replace(/ /g, "-");
-  }
-
-  function getAQIDescription(aqi) {
     if (aqi >= 401) {
-      return "Very Hazardous";
+      return "very-hazardous";
     } else if (aqi >= 301) {
-      return "Hazardous";
+      return "hazardous";
     } else if (aqi >= 201) {
-      return "Very Unhealthy";
+      return "very-unhealthy";
     } else if (aqi >= 151) {
-      return "Unhealthy";
+      return "unhealthy";
     } else if (aqi >= 101) {
-      return "Unhealthy for Sensitive Groups";
+      return "unhealthy-for-sensitive-groups";
     } else if (aqi >= 51) {
-      return "Moderate";
+      return "moderate";
     } else if (aqi >= 0) {
-      return "Good";
+      return "good";
     } else {
       return undefined;
     }
   }
 
-  function getAQIEmoji(aqi) {
-    if (aqi >= 401) {
-      return "&#x2620;"; // ☠
-    } else if (aqi >= 301) {
-      return "&#x1F635;"; // 😵
-    } else if (aqi >= 201) {
-      return "&#x1F922;"; // 🤢
-    } else if (aqi >= 151) {
-      return "&#x1F637;"; // 😷
-    } else if (aqi >= 101) {
-      return "&#x1F641;"; // ☹️
-    } else if (aqi >= 51) {
-      return "&#x1F610;"; // 😐
-    } else if (aqi >= 0) {
-      return "&#x1F600"; // 😀
-    } else {
-      return "";
-    }
-  }
 
   function unsupported() {
     announceError(

@@ -33,12 +33,29 @@
   <body class="checking">
     <div class="container">
       <div>
-        <h1 id="aqi">Checking&hellip;</h1>
+        <h1>
+          <span id="aqi">Checking&hellip;</span>
+          <span class="maybe-show airmoji very-hazardous">&#x2620;</span>
+          <span class="maybe-show airmoji hazardous">&#x1F635;</span>
+          <span class="maybe-show airmoji very-unhealthy">&#x1F922;</span>
+          <span class="maybe-show airmoji unhealthy">&#x1F637;</span>
+          <span class="maybe-show airmoji unhealthy-for-sensitive-groups">&#"&#x1F641;</span>
+          <span class="maybe-show airmoji moderate">&#x1F610;</span>
+          <span class="maybe-show airmoji good">&#x1F600;</span>
+        </h1>
         <div id="aqi-explanation">AQI calculated with <a href="https://thebolditalic.com/understanding-purpleair-vs-airnow-gov-measurements-of-wood-smoke-pollution-562923a55226">AQandU normalization</a></div>
-        <h2 id="desc"></h2>
+        <h2> <span id="desc"></span>
+          <span class="maybe-show aqi-desc very-hazardous">Very Hazardous</span>
+          <span class="maybe-show aqi-desc hazardous">Hazardous</span>
+          <span class="maybe-show aqi-desc very-unhealthy">Very Unhealthy</span>
+          <span class="maybe-show aqi-desc unhealthy">Unhealthy</span>
+          <span class="maybe-show aqi-desc unhealthy-for-sensitive-groups">Unhealthy for sensitive groups</span>
+          <span class="maybe-show aqi-desc moderate">Moderate</span>
+          <span class="maybe-show aqi-desc good">Good</span>
+        </h2>
         <h3 id="msg"></h3>
         <h4 id="state"></h4>
-        <div class="explanation very-hazardous">
+        <div class="explanation maybe-show hazardous very-hazardous">
           <p>
             <strong>Everyone</strong>: Avoid all physical activity outdoors.
           </p>
@@ -48,17 +65,7 @@
             indoors.
           </p>
         </div>
-        <div class="explanation hazardous">
-          <p>
-            <strong>Everyone</strong>: Avoid all physical activity outdoors.
-          </p>
-          <p>
-            <strong>Sensitive groups</strong>: Remain indoors and keep
-            activity levels low. Follow tips for keeping particle levels low
-            indoors.
-          </p>
-        </div>
-        <div class="explanation very-unhealthy">
+        <div class="explanation maybe-show very-unhealthy">
           <p>
             <strong>Sensitive groups</strong>: Avoid all physical activity
             outdoors. Move activities indoors or reschedule to a time when air
@@ -70,7 +77,7 @@
             air quality is better.
           </p>
         </div>
-        <div class="explanation unhealthy">
+        <div class="explanation maybe-show unhealthy">
           <p>
             <strong>Sensitive groups</strong>: Avoid prolonged or heavy
             exertion. Consider moving activities indoors or rescheduling.
@@ -80,7 +87,7 @@
               exertion. Take more breaks during outdoor activities.
             </p>
         </div>
-        <div class="explanation unhealthy-for-sensitive-groups">
+        <div class="explanation maybe-show unhealthy-for-sensitive-groups">
           <p>
             <strong>Sensitive groups</strong>: Reduce prolonged or heavy
             exertion. It’s OK to be active outside, but take more breaks and do
@@ -98,7 +105,7 @@
             provider.
           </p>
         </div>
-        <div class="explanation moderate">
+        <div class="explanation maybe-show moderate">
           <p>
             <strong>Unusually sensitive people</strong>: Consider reducing
             prolonged or heavy exertion. Watch for symptoms such as coughing or
@@ -109,7 +116,7 @@
             outside.
           </p>
         </div>
-        <div class="explanation good">
+        <div class="explanation maybe-show good">
         <p>It’s a great day to be active outside.</p>
         </div>
       </div>

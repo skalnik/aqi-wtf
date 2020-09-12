@@ -87,34 +87,34 @@ body.very-hazardous {
   color: #FFF;
 }
 
-body .explanation {
+body .maybe-show {
 	display: none;
 }
 
-body.very-hazardous .explanation.very-hazardous {
-	display: block;
+body.very-hazardous .maybe-show.very-hazardous {
+	display: revert;
 }
-body.hazardous .explanation.hazardous {
-	display: block;
-}
-
-body.very-unhealthy .explanation.very-unhealthy {
-	display: block;
-}
-body.unhealthy .explanation.unhealthy {
-	display: block;
+body.hazardous .maybe-show.hazardous {
+	display: revert;
 }
 
-body.unhealthy-for-sensitive-groups .explanation.unhealthy-for-sensitive-groups {
-	display: block;
+body.very-unhealthy .maybe-show.very-unhealthy {
+	display: revert;
+}
+body.unhealthy .maybe-show.unhealthy {
+	display: revert;
 }
 
-body.moderate .explanation.moderate {
-	display: block;
+body.unhealthy-for-sensitive-groups .maybe-show.unhealthy-for-sensitive-groups {
+	display: revert;
 }
 
-body.good .explanation.good {
-	display: block;
+body.moderate .maybe-show.moderate {
+	display: revert;
+}
+
+body.good .maybe-show.good {
+	display: revert;
 }
 
 a {
