@@ -99,14 +99,14 @@
     const distance = Math.round(closestSensor.distance * 10) / 10;
     const time = new Date().toLocaleTimeString();
     const paLink = getPurpleAirLink();
-    const aqiMsg = `AQI is ${aqi} ${getAQIEmoji(aqi)}`;
+    const aqiMsg = `${aqi} ${getAQIEmoji(aqi)}`;
     const stateMsg = `From <a href="${paLink}">a sensor ${distance}km away</a>  at ${time}`;
 
     announce(aqiMsg, getAQIDescription(aqi), getAQIMessage(aqi), stateMsg);
-
+    
+    // We want to sent the body state after announcing the AQI
     const body = document.querySelector("body");
-    body.classList.remove(...body.classList);
-    body.classList.add(getAQIClass(aqi));
+    body.classList.add(getAQIClass(aqi), "aqi-result");
 
     setTimeout(() => getLocation(), 60000);
   }
@@ -142,6 +142,11 @@
     const desc = document.getElementById("desc");
     const msg = document.getElementById("msg");
     const state = document.getElementById("state");
+
+    // We want to clear the body state on any announce
+    const body = document.querySelector("body");
+    body.classList.remove(...body.classList);
+
 
     head.innerHTML = headMsg;
     desc.innerHTML = descMsg;
