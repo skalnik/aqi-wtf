@@ -99,7 +99,7 @@
     const distance = Math.round(closestSensor.distance * 10) / 10;
     const time = new Date().toLocaleTimeString();
     const paLink = getPurpleAirLink();
-    const stateMsg = `From <a href="${paLink}">a sensor ${distance}km away</a>  at ${time}`;
+    const stateMsg = `and <a href="${paLink}">a sensor ${distance}km away</a> at ${time}`;
 
     announce(aqi, "", stateMsg);
 

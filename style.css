@@ -20,7 +20,7 @@ body {
   padding: 1em;
 }
 
-h1, h2, h3, h4, #aqi-explanation {
+h1, h2, #state, #aqi-explanation {
   justify-content: center;
   text-align: center;
 }
