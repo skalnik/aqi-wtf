@@ -85,17 +85,19 @@
 
   function updateAQI(sensor) {
     let pm25s = [];
+    let humidity = sensor.results[0].humidity;
 
     announceState("Calculating AQI");
 
     for (const subsensor of sensor.results) {
       if (!bustedSensor(subsensor)) {
-        pm25s.push(parseFloat(subsensor["PM2_5Value"]));
+        pm25s.push(parseFloat(subsensor["pm2_5_cf_1"]));
       }
+    
     }
     const pm25 = pm25s.reduce((a, b) => a + b) / pm25s.length;
-    const aqi = aqanduAQIFromPM(pm25);
-
+    const aqi = epaAQIFromPMandHumidity(pm25,humidity);
+ 
     const distance = Math.round(closestSensor.distance * 10) / 10;
     const time = new Date().toLocaleTimeString();
     const paLink = getPurpleAirLink();
@@ -227,6 +229,11 @@
   function aqanduAQIFromPM(pm) {
     return aqiFromPM(0.778 * pm + 2.65);
   }
+
+  function epaAQIFromPMandHumidity(pm, humidity) {
+    return aqiFromPM((0.543*pm) - (0.0844*humidity) + 5.604);
+  }
+	
 
   function aqiFromPM(pm) {
     if (isNaN(pm)) return "-";
