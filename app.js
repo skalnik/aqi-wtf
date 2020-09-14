@@ -12,16 +12,18 @@
   }
 
   function getLocation() {
-    announceState(
-      "Finding you",
-      "We need your browser location to find the nearest PurpleAir sensor. This information never leaves your device. It's not sent to a server."
-    );
+    announceState( "Finding you");
+    // If we don't have a location yet, then this is the first time we're trying
+    // and we should explain ourselves
+    if (coord === undefined ) {
+      explainPermissionsRequest();
+    }
     navigator.geolocation.getCurrentPosition(located, unsupported);
   }
 
   function located(position) {
     coord = position.coords;
-
+    clearPermissionsRequest();
     announceState("Finding nearby sensors");
     loadSensorsFromCacheAndShowAQI();
   }
@@ -134,6 +136,17 @@
 
     return true;
   }
+  
+  function explainPermissionsRequest() {
+    const body = document.querySelector("body");
+    body.classList.add("requesting-location");
+  }
+
+  function clearPermissionsRequest() {
+    const body = document.querySelector("body");
+    body.classList.remove("requesting-location");
+
+  }
 
   function announce(headMsg, descMsg = "", stateMsg = "") {
     const head = document.getElementById("aqi");
@@ -161,17 +174,17 @@
     announce(errorMsg, descMsg, callToAction);
   }
 
-  function announceState(stateMsg, descMsg = "") {
+  function announceState(stateMsg) {
     // If we have something in state already, it means we've previously loaded
     // some content and don't want to blow away the top level AQI state until
     // we have something interesting to report
+    const state = document.getElementById("state");
     if (state.innerHTML !== "") {
-      const state = document.getElementById("state");
       state.innerHTML = stateMsg;
     } else {
       // If state is empty, we have not yet given the breather an AQI reading, so
       // state is important enough to shove up top in the H1
-      announce(stateMsg, descMsg);
+      announce(stateMsg);
     }
   }
 
@@ -288,6 +301,7 @@
   }
 
   function unsupported() {
+    clearPermissionsRequest();
     announceError(
       "Scooby-Doo, Where Are You!",
       "We need your browser location to find the nearest PurpleAir sensor. This information never leaves your device. It's not sent to a server."
