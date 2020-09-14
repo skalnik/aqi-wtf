@@ -12,10 +12,10 @@
   }
 
   function getLocation() {
-    announceState( "Finding you");
+    announceState("Finding you");
     // If we don't have a location yet, then this is the first time we're trying
     // and we should explain ourselves
-    if (coord === undefined ) {
+    if (coord === undefined) {
       explainPermissionsRequest();
     }
     navigator.geolocation.getCurrentPosition(located, unsupported);
@@ -136,7 +136,7 @@
 
     return true;
   }
-  
+
   function explainPermissionsRequest() {
     const body = document.querySelector("body");
     body.classList.add("requesting-location");
@@ -145,7 +145,6 @@
   function clearPermissionsRequest() {
     const body = document.querySelector("body");
     body.classList.remove("requesting-location");
-
   }
 
   function announce(headMsg, descMsg = "", stateMsg = "") {
