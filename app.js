@@ -165,8 +165,8 @@
     // If we have something in state already, it means we've previously loaded
     // some content and don't want to blow away the top level AQI state until
     // we have something interesting to report
+    const state = document.getElementById("state");
     if (state.innerHTML !== "") {
-      const state = document.getElementById("state");
       state.innerHTML = stateMsg;
     } else {
       // If state is empty, we have not yet given the breather an AQI reading, so
