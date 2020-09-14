@@ -107,6 +107,19 @@
     const body = document.querySelector("body");
     body.classList.add(getAQIClass(aqi), "aqi-result");
 
+    const color = d3
+      .scaleLinear()
+      .domain([0, 50, 100, 150, 250, 500])
+      .range([
+        '#68E143',
+        '#ffff55',
+        '#EF8533',
+        '#EA3324',
+        '#8C1A4B',
+        '#731425',
+      ]);
+    body.style.backgroundColor = color(aqi);
+
     setTimeout(() => getLocation(), 60000);
   }
 
