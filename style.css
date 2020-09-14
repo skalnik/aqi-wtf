@@ -117,6 +117,15 @@ body.good .maybe-show.good {
 	display: revert;
 }
 
+
+body #explain-permissions {
+	display: none;
+}
+
+body.requesting-location #explain-permissions {
+	display: block;
+}
+
 a {
   color: inherit;
 }
