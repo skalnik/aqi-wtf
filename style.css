@@ -88,43 +88,43 @@ body.very-hazardous {
 }
 
 body .maybe-show {
-	display: none;
+  display: none;
 }
 
 body.very-hazardous .maybe-show.very-hazardous {
-	display: revert;
+  display: revert;
 }
 body.hazardous .maybe-show.hazardous {
-	display: revert;
+  display: revert;
 }
 
 body.very-unhealthy .maybe-show.very-unhealthy {
-	display: revert;
+  display: revert;
 }
 body.unhealthy .maybe-show.unhealthy {
-	display: revert;
+  display: revert;
 }
 
 body.unhealthy-for-sensitive-groups .maybe-show.unhealthy-for-sensitive-groups {
-	display: revert;
+  display: revert;
 }
 
 body.moderate .maybe-show.moderate {
-	display: revert;
+  display: revert;
 }
 
 body.good .maybe-show.good {
   text-align: center;
-	display: revert;
+  display: revert;
 }
 
 
 body #explain-permissions {
-	display: none;
+  display: none;
 }
 
 body.requesting-location #explain-permissions {
-	display: block;
+  display: block;
 }
 
 a {
