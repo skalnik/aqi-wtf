@@ -114,6 +114,7 @@ body.moderate .maybe-show.moderate {
 }
 
 body.good .maybe-show.good {
+  text-align: center;
 	display: revert;
 }
 
