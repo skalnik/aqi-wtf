@@ -5,10 +5,12 @@
   let closestSensor;
 
   function onStart() {
-    document.getElementById("powerwash").addEventListener("click", function () {
-      clearStorage();
-    });
+    document.getElementById("powerwash").onclick = clearStorage;
     getLocation();
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js");
+    }
   }
 
   function getLocation() {
@@ -57,8 +59,18 @@
   }
 
   function fetchSensorListAndShowAQI() {
+    // Grab an area around the sensor's coords rather than the full list
+    const offset = 0.125; // In desnse areas, half this is perhaps better
+    const baseDataUrl = `https://www.purpleair.com/data.json`;
+    const nwlat = Math.min(coord.latitude  + offset, 90);
+    const selat = Math.max(coord.latitude  - offset, -90);
+    const nwlng = Math.min(coord.longitude - offset, 180);
+    const selng = Math.max(coord.longitude + offset, -180);
+    const coordsArgs = 
+        `nwlat=${nwlat}&selat=${selat}&nwlng=${nwlng}&selng=${selng}`;
     const url =
-      "https://www.purpleair.com/data.json?opt=1/mAQI/a10/cC0&fetch=true&fields=,";
+        `${baseDataUrl}?opt=1/mAQI/a10/cC0&fetch=true&${coordsArgs}&fields=,`;
+
     window
       .fetch(url)
       .then((response) => response.json())
@@ -106,8 +118,18 @@
     announce(aqi, "", stateMsg);
 
     // We want to sent the body state after announcing the AQI
-    const body = document.querySelector("body");
-    body.classList.add(getAQIClass(aqi), "aqi-result");
+    document.body.classList.add(getAQIClass(aqi), "aqi-result");
+    
+    // When the animation ends, make sure the top tab/tray color matches the bg
+    let tc = document.head.querySelector("meta[name=\"theme-color\"]");
+    if (tc) {
+      document.body.ontransitionend = function() {
+        tc.setAttribute(
+            "content", 
+            window.getComputedStyle(document.body).backgroundColor
+        );
+      }
+    }
 
     setTimeout(() => getLocation(), 60000);
   }
@@ -138,13 +160,11 @@
   }
 
   function explainPermissionsRequest() {
-    const body = document.querySelector("body");
-    body.classList.add("requesting-location");
+    document.body.classList.add("requesting-location");
   }
 
   function clearPermissionsRequest() {
-    const body = document.querySelector("body");
-    body.classList.remove("requesting-location");
+    document.body.classList.remove("requesting-location");
   }
 
   function announce(headMsg, descMsg = "", stateMsg = "") {
@@ -153,8 +173,7 @@
     const state = document.getElementById("state");
 
     // We want to clear the body state on any announce
-    const body = document.querySelector("body");
-    body.classList.remove(...body.classList);
+    document.body.classList.remove(...document.body.classList);
 
     head.innerHTML = headMsg;
     desc.innerHTML = descMsg;
