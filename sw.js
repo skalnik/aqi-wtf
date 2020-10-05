@@ -1,5 +1,6 @@
 importScripts(
-  "https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js");
+  "https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js"
+);
 
 let version = 1;
 
@@ -22,6 +23,6 @@ workbox.precaching.precacheAndRoute(
     item("https://plausible.io/js/plausible.js"),
   ],
   {
-    ignoreURLParametersMatching: [/.*/]
+    ignoreURLParametersMatching: [/.*/],
   }
 );
