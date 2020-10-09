@@ -259,7 +259,7 @@
   }
 
   function epaAQIFromPMandHumidity(pm, humidity) {
-    return aqiFromPM((0.543*pm) - (0.0844*humidity) + 5.604);
+    return aqiFromPM((0.534*pm) - (0.0844*humidity) + 5.604);
   }
 	
 
