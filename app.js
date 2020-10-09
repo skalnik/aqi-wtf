@@ -59,7 +59,8 @@
   }
 
   function fetchSensorListAndShowAQI() {
-    const url = "https://www.purpleair.com/data.json?opt=1/mAQI/a10/cC0&fetch=true&fields=,"
+    const url =
+      "https://www.purpleair.com/data.json?opt=1/mAQI/a10/cC0&fetch=true&fields=,";
 
     window
       .fetch(url)
