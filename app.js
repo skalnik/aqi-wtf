@@ -5,23 +5,27 @@
   let closestSensor;
 
   function onStart() {
-    document.getElementById("powerwash").addEventListener("click", function () {
-      clearStorage();
-    });
+    document.getElementById("powerwash").onclick = clearStorage;
     getLocation();
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js");
+    }
   }
 
   function getLocation() {
-    announceState(
-      "Finding you",
-      "We need your browser location to find the nearest PurpleAir sensor. This information never leaves your device. It's not sent to a server."
-    );
+    announceState("Finding you");
+    // If we don't have a location yet, then this is the first time we're trying
+    // and we should explain ourselves
+    if (coord === undefined) {
+      explainPermissionsRequest();
+    }
     navigator.geolocation.getCurrentPosition(located, unsupported);
   }
 
   function located(position) {
     coord = position.coords;
-
+    clearPermissionsRequest();
     announceState("Finding nearby sensors");
     loadSensorsFromCacheAndShowAQI();
   }
@@ -57,6 +61,7 @@
   function fetchSensorListAndShowAQI() {
     const url =
       "https://www.purpleair.com/data.json?opt=1/mAQI/a10/cC0&fetch=true&fields=,";
+
     window
       .fetch(url)
       .then((response) => response.json())
@@ -101,14 +106,23 @@
     const distance = Math.round(closestSensor.distance * 10) / 10;
     const time = new Date().toLocaleTimeString();
     const paLink = getPurpleAirLink();
-    const aqiMsg = `${aqi} ${getAQIEmoji(aqi)}`;
-    const stateMsg = `From <a href="${paLink}">a sensor ${distance}km away</a>  at ${time}`;
+    const stateMsg = `and <a href="${paLink}">a sensor ${distance}km away</a> at ${time}`;
 
-    announce(aqiMsg, getAQIDescription(aqi), stateMsg);
+    announce(aqi, "", stateMsg);
 
     // We want to sent the body state after announcing the AQI
-    const body = document.querySelector("body");
-    body.classList.add(getAQIClass(aqi), "aqi-result");
+    document.body.classList.add(getAQIClass(aqi), "aqi-result");
+
+    // When the animation ends, make sure the top tab/tray color matches the bg
+    let tc = document.head.querySelector('meta[name="theme-color"]');
+    if (tc) {
+      document.body.ontransitionend = function () {
+        tc.setAttribute(
+          "content",
+          window.getComputedStyle(document.body).backgroundColor
+        );
+      };
+    }
 
     setTimeout(() => getLocation(), 60000);
   }
@@ -128,7 +142,6 @@
       "pm2_5_atm",
       "pm10_0_atm",
     ];
-    let busted = true;
 
     for (const pValue of pValues) {
       if (sensor[pValue] !== "0.0") {
@@ -139,35 +152,50 @@
     return true;
   }
 
+  function explainPermissionsRequest() {
+    document.body.classList.add("requesting-location");
+  }
+
+  function clearPermissionsRequest() {
+    document.body.classList.remove("requesting-location");
+  }
+
   function announce(headMsg, descMsg = "", stateMsg = "") {
     const head = document.getElementById("aqi");
     const desc = document.getElementById("desc");
     const state = document.getElementById("state");
 
     // We want to clear the body state on any announce
-    const body = document.querySelector("body");
-    body.classList.remove(...body.classList);
+    document.body.classList.remove(...document.body.classList);
 
     head.innerHTML = headMsg;
     desc.innerHTML = descMsg;
     state.innerHTML = stateMsg;
   }
 
-  function announceError(errorMsg, descMsg = "", msgMsg = "") {
-    announce(errorMsg, descMsg, msgMsg);
+  function announceError(errorMsg, descMsg = "") {
+    if (closestSensor !== null && closestSensor.id !== null) {
+      const paLink = getPurpleAirLink();
+      callToAction = `<a href='#' onclick='location.reload()'>Reload?</a> Or <a href="${paLink}">try PurpleAir's map</a>.`;
+    } else {
+      callToAction =
+        "You might want to try <a href='https://www.purpleair.com/map?opt=1/i/mAQI/a0/cC1#1/25/-30'>PurpleAir's map</a>.";
+    }
+
+    announce(errorMsg, descMsg, callToAction);
   }
 
-  function announceState(stateMsg, descMsg = "") {
+  function announceState(stateMsg) {
     // If we have something in state already, it means we've previously loaded
     // some content and don't want to blow away the top level AQI state until
     // we have something interesting to report
+    const state = document.getElementById("state");
     if (state.innerHTML !== "") {
-      const state = document.getElementById("state");
       state.innerHTML = stateMsg;
     } else {
       // If state is empty, we have not yet given the breather an AQI reading, so
       // state is important enough to shove up top in the H1
-      announce(stateMsg, descMsg);
+      announce(stateMsg);
     }
   }
 
@@ -218,7 +246,7 @@
         Math.cos(coord2.latitude * p) *
         (1 - Math.cos((coord2.longitude - coord1.longitude) * p))) /
         2;
-
+    // 12742 is the diameter of earth in km
     return 12742 * Math.asin(Math.sqrt(a));
   }
 
@@ -261,6 +289,7 @@
   }
 
   function calcAQI(Cp, Ih, Il, BPh, BPl) {
+    // The AQI equation https://forum.airnowtech.org/t/the-aqi-equation/169
     var a = Ih - Il;
     var b = BPh - BPl;
     var c = Cp - BPl;
@@ -268,63 +297,35 @@
   }
 
   function getAQIClass(aqi) {
-    return getAQIDescription(aqi).toLowerCase().replace(/ /g, "-");
-  }
-
-  function getAQIDescription(aqi) {
     if (aqi >= 401) {
-      return "Very Hazardous";
+      return "very-hazardous";
     } else if (aqi >= 301) {
-      return "Hazardous";
+      return "hazardous";
     } else if (aqi >= 201) {
-      return "Very Unhealthy";
+      return "very-unhealthy";
     } else if (aqi >= 151) {
-      return "Unhealthy";
+      return "unhealthy";
     } else if (aqi >= 101) {
-      return "Unhealthy for Sensitive Groups";
+      return "unhealthy-for-sensitive-groups";
     } else if (aqi >= 51) {
-      return "Moderate";
+      return "moderate";
     } else if (aqi >= 0) {
-      return "Good";
+      return "good";
     } else {
       return undefined;
     }
   }
 
-  function getAQIEmoji(aqi) {
-    if (aqi >= 401) {
-      return "&#x2620;"; // ☠
-    } else if (aqi >= 301) {
-      return "&#x1F635;"; // 😵
-    } else if (aqi >= 201) {
-      return "&#x1F922;"; // 🤢
-    } else if (aqi >= 151) {
-      return "&#x1F637;"; // 😷
-    } else if (aqi >= 101) {
-      return "&#x1F641;"; // ☹️
-    } else if (aqi >= 51) {
-      return "&#x1F610;"; // 😐
-    } else if (aqi >= 0) {
-      return "&#x1F600"; // 😀
-    } else {
-      return "";
-    }
-  }
-
   function unsupported() {
+    clearPermissionsRequest();
     announceError(
       "Scooby-Doo, Where Are You!",
-      "We need your browser location to find the nearest PurpleAir sensor. This information never leaves your device. It's not sent to a server.",
-      "You might want to try <a href='https://www.purpleair.com/map?opt=1/i/mAQI/a0/cC1#1/25/-30'>PurpleAir's map</a>."
+      "We need your browser location to find the nearest PurpleAir sensor. This information never leaves your device. It's not sent to a server."
     );
   }
 
   function purpleError(error) {
     console.error("Purple Air Error: ", error);
-    announceError(
-      "idk how purple air evens, m8",
-      error,
-      "<a href='#' onclick='location.reload()'>Reload?</a>"
-    );
+    announceError("idk how purple air evens, m8", error);
   }
 })();

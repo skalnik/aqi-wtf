@@ -1,9 +1,17 @@
 {
   "scripts": {
     "lint": "prettier *.js *.json",
-    "lint:fix": "prettier --write *.js *.json"
+    "lint:fix": "prettier --write *.js *.json *.css"
   },
   "devDependencies": {
     "prettier": "^2.1.1"
+  },
+  "license": {
+    "type": "MIT",
+    "url": "https://www.opensource.org/licenses/mit-license.php"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skalnik/aqi-wtf.git"
   }
 }

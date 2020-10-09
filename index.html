@@ -9,19 +9,19 @@
 
     <!-- Primary Meta Tags -->
     <meta name="title" content="What the fuck is the AQI">
-    <meta name="description" content="What the fuck is the AQI from the nearest PurpleAir sensor to me?">
+    <meta name="description" content="What the fuck is the AQI from the PurpleAir sensor nearest to me?">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://aqiwtf.com/">
     <meta property="og:title" content="AQI WTF?!">
-    <meta property="og:description" content="What the fuck is the AQI from the nearest PurpleAir sensor to me?">
+    <meta property="og:description" content="What the fuck is the AQI from the PurpleAir sensor nearest to me?">
     <meta property="og:image" content="meta.png">
 
     <!-- Twitter -->
     <meta property="twitter:url" content="https://aqiwtf.com/">
     <meta property="twitter:title" content="AQI WTF?!">
-    <meta property="twitter:description" content="What the fuck is the AQI from the nearest PurpleAir sensor to me?">
+    <meta property="twitter:description" content="What the fuck is the AQI from the PurpleAir sensor nearest to me?">
     <meta property="twitter:image" content="meta.png">
 
     <!-- Favicon and Friends -->
@@ -29,16 +29,35 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
+
+    <meta name="theme-color" content="#ffffff">
   </head>
   <body class="checking">
     <div class="container">
       <div>
-        <h1 id="aqi">Checking&hellip;</h1>
-        <div id="aqi-explanation">AQI calculated with <a href="https://thebolditalic.com/understanding-purpleair-vs-airnow-gov-measurements-of-wood-smoke-pollution-562923a55226">EPA-recommended corrections</a>.</div>
-        <h2 id="desc"></h2>
+        <h1>
+          <span id="aqi">Checking&hellip;</span>
+          <span class="maybe-show airmoji very-hazardous">&#x2620;&#65039;</span>
+          <span class="maybe-show airmoji hazardous">&#x1F635;</span>
+          <span class="maybe-show airmoji very-unhealthy">&#x1F922;</span>
+          <span class="maybe-show airmoji unhealthy">&#x1F637;</span>
+          <span class="maybe-show airmoji unhealthy-for-sensitive-groups">&#x1F641;</span>
+          <span class="maybe-show airmoji moderate">&#x1F610;</span>
+          <span class="maybe-show airmoji good">&#x1F600;</span>
+        </h1>
+        <div id="aqi-explanation">AQI calculated using <a href="https://thebolditalic.com/understanding-purpleair-vs-airnow-gov-measurements-of-wood-smoke-pollution-562923a55226">EPA-recommended corrections</a>.</div>
+        <div id="state"></div>
+        <h2> <span id="desc"></span>
+          <span class="maybe-show aqi-desc very-hazardous">Very Hazardous</span>
+          <span class="maybe-show aqi-desc hazardous">Hazardous</span>
+          <span class="maybe-show aqi-desc very-unhealthy">Very Unhealthy</span>
+          <span class="maybe-show aqi-desc unhealthy">Unhealthy</span>
+          <span class="maybe-show aqi-desc unhealthy-for-sensitive-groups">Unhealthy for sensitive groups</span>
+          <span class="maybe-show aqi-desc moderate">Moderate</span>
+          <span class="maybe-show aqi-desc good">Good</span>
+        </h2>
         <h3 id="msg"></h3>
-        <h4 id="state"></h4>
-        <div class="explanation very-hazardous">
+        <div class="explanation maybe-show hazardous very-hazardous">
           <p>
             <strong>Everyone</strong>: Avoid all physical activity outdoors.
           </p>
@@ -48,17 +67,7 @@
             indoors.
           </p>
         </div>
-        <div class="explanation hazardous">
-          <p>
-            <strong>Everyone</strong>: Avoid all physical activity outdoors.
-          </p>
-          <p>
-            <strong>Sensitive groups</strong>: Remain indoors and keep
-            activity levels low. Follow tips for keeping particle levels low
-            indoors.
-          </p>
-        </div>
-        <div class="explanation very-unhealthy">
+        <div class="explanation maybe-show very-unhealthy">
           <p>
             <strong>Sensitive groups</strong>: Avoid all physical activity
             outdoors. Move activities indoors or reschedule to a time when air
@@ -70,7 +79,7 @@
             air quality is better.
           </p>
         </div>
-        <div class="explanation unhealthy">
+        <div class="explanation maybe-show unhealthy">
           <p>
             <strong>Sensitive groups</strong>: Avoid prolonged or heavy
             exertion. Consider moving activities indoors or rescheduling.
@@ -80,7 +89,7 @@
               exertion. Take more breaks during outdoor activities.
             </p>
         </div>
-        <div class="explanation unhealthy-for-sensitive-groups">
+        <div class="explanation maybe-show unhealthy-for-sensitive-groups">
           <p>
             <strong>Sensitive groups</strong>: Reduce prolonged or heavy
             exertion. It’s OK to be active outside, but take more breaks and do
@@ -98,7 +107,7 @@
             provider.
           </p>
         </div>
-        <div class="explanation moderate">
+        <div class="explanation maybe-show moderate">
           <p>
             <strong>Unusually sensitive people</strong>: Consider reducing
             prolonged or heavy exertion. Watch for symptoms such as coughing or
@@ -109,14 +118,18 @@
             outside.
           </p>
         </div>
-        <div class="explanation good">
+        <div class="explanation maybe-show good">
         <p>It’s a great day to be active outside.</p>
+        </div>
+        <div id="explain-permissions">
+          We need your browser location to find the nearest PurpleAir sensor.
+          This information never leaves your device. It's not sent to a server.
         </div>
       </div>
     </div>
     <footer>
       <div>
-        Made with &#10084;&#65039; by <a href="https://skalnik.com">@skalnik</a> &amp; <a href="https://github.com/skalnik/aqi-wtf/graphs/contributors">friends</a> &bull; <a href="https://github.com/skalnik/aqi-wtf/">Code</a> &bull; <a href="https://purpleair.com">Data</a> &bull; <a href="/privacy.html">Privacy</a>
+        <a href="https://aqi.wtf">aqi.wtf</a> is made with &#10084;&#65039; by <a href="https://skalnik.com">@skalnik</a> &amp; <a href="https://github.com/skalnik/aqi-wtf/graphs/contributors">friends</a> &bull; <a href="https://github.com/skalnik/aqi-wtf/">Code</a> &bull; <a href="https://purpleair.com">Data</a> &bull; <a href="/privacy.html">Privacy</a>
       </div>
       <div class="right">
         <a id="powerwash" href="#" onclick="clearStorage(); return false;">Clear stored data.</a>
