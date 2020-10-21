@@ -98,11 +98,10 @@
       if (!bustedSensor(subsensor)) {
         pm25s.push(parseFloat(subsensor["pm2_5_cf_1"]));
       }
-    
     }
     const pm25 = pm25s.reduce((a, b) => a + b) / pm25s.length;
-    const aqi = epaAQIFromPMandHumidity(pm25,humidity);
- 
+    const aqi = epaAQIFromPMandHumidity(pm25, humidity);
+
     const distance = Math.round(closestSensor.distance * 10) / 10;
     const time = new Date().toLocaleTimeString();
     const paLink = getPurpleAirLink();
@@ -259,9 +258,8 @@
   }
 
   function epaAQIFromPMandHumidity(pm, humidity) {
-    return aqiFromPM((0.534*pm) - (0.0844*humidity) + 5.604);
+    return aqiFromPM(0.534 * pm - 0.0844 * humidity + 5.604);
   }
-	
 
   function aqiFromPM(pm) {
     if (isNaN(pm)) return "-";
