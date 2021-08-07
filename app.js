@@ -264,7 +264,7 @@
   function aqiFromPM(pm) {
     if (isNaN(pm)) return "-";
     if (pm == undefined) return "-";
-    if (pm < 0) return pm;
+    if (pm < 0) return 0;
     if (pm > 1000) return "-";
 
     if (pm > 350.5) {
