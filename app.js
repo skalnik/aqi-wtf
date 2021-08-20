@@ -257,8 +257,15 @@
     return aqiFromPM(0.778 * pm + 2.65);
   }
 
+  // From https://www.epa.gov/sites/default/files/2021-05/documents/toolsresourceswebinar_purpleairsmoke_210519b.pdf final slide
   function epaAQIFromPMandHumidity(pm, humidity) {
-    return aqiFromPM(0.534 * pm - 0.0844 * humidity + 5.604);
+    if (pm < 50) {
+      return aqiFromPM(0.52 * pm - 0.086 * humidity + 5.75);
+    } else if (pm < 229) {
+      return aqiFromPM(0.786 * pm - 0.086 * humidity + 5.75);
+    } else {
+      return aqiFromPM(0.69 * pm + 8.84 * Math.pow(10, -4) * Math.pow(pm, 2) + 2.97);
+    }
   }
 
   function aqiFromPM(pm) {
