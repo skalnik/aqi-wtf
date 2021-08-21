@@ -264,7 +264,9 @@
     } else if (pm < 229) {
       return aqiFromPM(0.786 * pm - 0.086 * humidity + 5.75);
     } else {
-      return aqiFromPM(0.69 * pm + 8.84 * Math.pow(10, -4) * Math.pow(pm, 2) + 2.97);
+      return aqiFromPM(
+        0.69 * pm + 8.84 * Math.pow(10, -4) * Math.pow(pm, 2) + 2.97
+      );
     }
   }
 
