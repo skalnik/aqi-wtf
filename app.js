@@ -204,7 +204,7 @@
     }
     window.localStorage.setItem(
       "sensors",
-      JSON.stringify({ version: 1, timestamp: Date.now(), data: sensors })
+      JSON.stringify({ version: 2, timestamp: Date.now(), data: sensors })
     );
     return sensors;
   }
