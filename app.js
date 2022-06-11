@@ -60,7 +60,7 @@
 
   function fetchSensorListAndShowAQI() {
     const url =
-      "https://www.purpleair.com/data.json?opt=1/mAQI/a10/cC0&fetch=true&fields=,";
+      "https://api.purpleair.com/v1/sensors?api_key=AA055D5D-E333-11EC-8561-42010A800005&fields=longitude,latitude&location_type=0&max_age=300"
 
     window
       .fetch(url)
@@ -79,7 +79,7 @@
 
   function updateWithSensor(sensor) {
     announceState("Getting sensor data");
-    const url = `https://www.purpleair.com/json?show=${sensor.id}`;
+    const url = `https://api.purpleair.com/v1/sensors/${sensor.id}?api_key=AA055D5D-E333-11EC-8561-42010A800005&fields=pm2.5_10minute_a,pm2.5_10minute_b,humidity`
 
     window
       .fetch(url)
@@ -89,16 +89,20 @@
   }
 
   function updateAQI(sensor) {
-    let pm25s = [];
-    let humidity = sensor.results[0].humidity;
-
+    sensor = sensor.sensor;
     announceState("Calculating AQI");
 
-    for (const subsensor of sensor.results) {
-      if (!bustedSensor(subsensor)) {
-        pm25s.push(parseFloat(subsensor["pm2_5_cf_1"]));
-      }
+    const humidity = sensor.humidity;
+    let pm25s = []
+
+    if (sensor.stats_a["pm2.5_10minute"] !== 0.0) {
+      pm25s.push(sensor.stats_a["pm2.5_10minute"])
     }
+
+    if (sensor.stats_b["pm2.5_10minute"] !== 0.0) {
+      pm25s.push(sensor.stats_b["pm2.5_10minute"])
+    }
+
     const pm25 = pm25s.reduce((a, b) => a + b) / pm25s.length;
     const aqi = epaAQIFromPMandHumidity(pm25, humidity);
 
@@ -126,31 +130,6 @@
     setTimeout(() => getLocation(), 60000);
   }
 
-  function bustedSensor(sensor) {
-    const pValues = [
-      "p_0_3_um",
-      "p_0_5_um",
-      "p_1_0_um",
-      "p_2_5_um",
-      "p_5_0_um",
-      "p_10_0_um",
-      "pm1_0_cf_1",
-      "pm2_5_cf_1",
-      "pm10_0_cf_1",
-      "pm1_0_atm",
-      "pm2_5_atm",
-      "pm10_0_atm",
-    ];
-
-    for (const pValue of pValues) {
-      if (sensor[pValue] !== "0.0") {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
   function explainPermissionsRequest() {
     document.body.classList.add("requesting-location");
   }
@@ -173,7 +152,7 @@
   }
 
   function announceError(errorMsg, descMsg = "") {
-    if (closestSensor !== null && closestSensor.id !== null) {
+    if (closestSensor !== undefined && closestSensor !== null && closestSensor.id !== null) {
       const paLink = getPurpleAirLink();
       callToAction = `<a href='#' onclick='location.reload()'>Reload?</a> Or <a href="${paLink}">try PurpleAir's map</a>.`;
     } else {
@@ -213,24 +192,19 @@
   function parsePurpleAirData(json) {
     let sensors = [];
     let fields = [];
-    fields["indoor"] = json.fields.findIndex((e) => e === "Type");
-    fields["latitude"] = json.fields.findIndex((e) => e === "Lat");
-    fields["longitude"] = json.fields.findIndex((e) => e === "Lon");
-    fields["id"] = json.fields.findIndex((e) => e === "ID");
-    fields["age"] = json.fields.findIndex((e) => e === "age");
+    fields["latitude"] = json.fields.findIndex((e) => e === "latitude");
+    fields["longitude"] = json.fields.findIndex((e) => e === "longitude");
+    fields["sensor_index"] = json.fields.findIndex((e) => e === "sensor_index");
     for (const sensor of json.data) {
-      // Ignore sensors which are either indoor or updated over 5 minutes ago
-      if (sensor[fields["indoor"]] === 0 && sensor[fields["age"]] < 5) {
-        sensors.push({
-          id: sensor[fields["id"]],
-          latitude: sensor[fields["latitude"]],
-          longitude: sensor[fields["longitude"]],
-        });
-      }
+      sensors.push({
+        id: sensor[fields["sensor_index"]],
+        latitude: sensor[fields["latitude"]],
+        longitude: sensor[fields["longitude"]],
+      });
     }
     window.localStorage.setItem(
       "sensors",
-      JSON.stringify({ version: 1, timestamp: Date.now(), data: sensors })
+      JSON.stringify({ version: 2, timestamp: Date.now(), data: sensors })
     );
     return sensors;
   }
