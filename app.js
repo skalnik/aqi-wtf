@@ -60,7 +60,7 @@
 
   function fetchSensorListAndShowAQI() {
     const url =
-      "https://api.purpleair.com/v1/sensors?api_key=AA055D5D-E333-11EC-8561-42010A800005&fields=longitude,latitude&location_type=0&max_age=300"
+      "https://api.purpleair.com/v1/sensors?api_key=AA055D5D-E333-11EC-8561-42010A800005&fields=longitude,latitude&location_type=0&max_age=300";
 
     window
       .fetch(url)
@@ -79,7 +79,7 @@
 
   function updateWithSensor(sensor) {
     announceState("Getting sensor data");
-    const url = `https://api.purpleair.com/v1/sensors/${sensor.id}?api_key=AA055D5D-E333-11EC-8561-42010A800005&fields=pm2.5_10minute_a,pm2.5_10minute_b,humidity`
+    const url = `https://api.purpleair.com/v1/sensors/${sensor.id}?api_key=AA055D5D-E333-11EC-8561-42010A800005&fields=pm2.5_10minute_a,pm2.5_10minute_b,humidity`;
 
     window
       .fetch(url)
@@ -93,14 +93,14 @@
     announceState("Calculating AQI");
 
     const humidity = sensor.humidity;
-    let pm25s = []
+    let pm25s = [];
 
     if (sensor.stats_a["pm2.5_10minute"] !== 0.0) {
-      pm25s.push(sensor.stats_a["pm2.5_10minute"])
+      pm25s.push(sensor.stats_a["pm2.5_10minute"]);
     }
 
     if (sensor.stats_b["pm2.5_10minute"] !== 0.0) {
-      pm25s.push(sensor.stats_b["pm2.5_10minute"])
+      pm25s.push(sensor.stats_b["pm2.5_10minute"]);
     }
 
     const pm25 = pm25s.reduce((a, b) => a + b) / pm25s.length;
@@ -152,7 +152,11 @@
   }
 
   function announceError(errorMsg, descMsg = "") {
-    if (closestSensor !== undefined && closestSensor !== null && closestSensor.id !== null) {
+    if (
+      closestSensor !== undefined &&
+      closestSensor !== null &&
+      closestSensor.id !== null
+    ) {
       const paLink = getPurpleAirLink();
       callToAction = `<a href='#' onclick='location.reload()'>Reload?</a> Or <a href="${paLink}">try PurpleAir's map</a>.`;
     } else {
