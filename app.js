@@ -130,31 +130,6 @@
     setTimeout(() => getLocation(), 60000);
   }
 
-  function bustedSensor(sensor) {
-    const pValues = [
-      "p_0_3_um",
-      "p_0_5_um",
-      "p_1_0_um",
-      "p_2_5_um",
-      "p_5_0_um",
-      "p_10_0_um",
-      "pm1_0_cf_1",
-      "pm2_5_cf_1",
-      "pm10_0_cf_1",
-      "pm1_0_atm",
-      "pm2_5_atm",
-      "pm10_0_atm",
-    ];
-
-    for (const pValue of pValues) {
-      if (sensor[pValue] !== "0.0") {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
   function explainPermissionsRequest() {
     document.body.classList.add("requesting-location");
   }
