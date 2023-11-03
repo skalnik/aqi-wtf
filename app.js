@@ -236,10 +236,6 @@
     return `https://www.purpleair.com/map?opt=1/i/mAQI/a0/cC5&select=${closestSensor.id}#14/${coord.latitude}/${coord.longitude}`;
   }
 
-  function aqanduAQIFromPM(pm) {
-    return aqiFromPM(0.778 * pm + 2.65);
-  }
-
   // From https://www.epa.gov/sites/default/files/2021-05/documents/toolsresourceswebinar_purpleairsmoke_210519b.pdf final slide
   function epaAQIFromPMandHumidity(pm, humidity) {
     if (pm < 50) {
