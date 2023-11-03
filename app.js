@@ -3,7 +3,11 @@
 
   let coord;
   let closestSensor;
-  const KEY="BA110377-679A-11EE-A8AF-42010A80000A"
+  const FETCH_OPTIONS = {
+    headers: {
+      "X-API-Key": "BA110377-679A-11EE-A8AF-42010A80000A",
+    }
+  }
 
   function onStart() {
     document.getElementById("powerwash").onclick = clearStorage;
@@ -61,10 +65,10 @@
 
   function fetchSensorListAndShowAQI() {
     const url =
-      `https://api.purpleair.com/v1/sensors?api_key=${KEY}&fields=longitude,latitude&location_type=0&max_age=300`;
+      `https://api.purpleair.com/v1/sensors?fields=longitude,latitude&location_type=0&max_age=300`;
 
     window
-      .fetch(url)
+      .fetch(url, FETCH_OPTIONS)
       .then((response) => response.json())
       .then((response) => {
         if (response.code && response.code >= 400 && response.message) {
@@ -80,10 +84,10 @@
 
   function updateWithSensor(sensor) {
     announceState("Getting sensor data");
-    const url = `https://api.purpleair.com/v1/sensors/${sensor.id}?api_key=${KEY}&fields=pm2.5_10minute_a,pm2.5_10minute_b,humidity`;
+    const url = `https://api.purpleair.com/v1/sensors/${sensor.id}?fields=pm2.5_10minute_a,pm2.5_10minute_b,humidity`;
 
     window
-      .fetch(url)
+      .fetch(url, FETCH_OPTIONS)
       .then((response) => response.json())
       .then(updateAQI)
       .catch(purpleError);
