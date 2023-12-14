@@ -64,8 +64,9 @@
   }
 
   function fetchSensorListAndShowAQI() {
+    bounding_box = boundingBox(coord, 10) // 10km bounding box
     const url =
-      `https://api.purpleair.com/v1/sensors?fields=longitude,latitude&location_type=0&max_age=300`;
+      `https://api.purpleair.com/v1/sensors?fields=longitude,latitude&location_type=0&max_age=300&nwlng=${bounding_box.nw.longitude}&nwlat=${bounding_box.nw.latitude}&selng=${bounding_box.se.longitude}&selat=${bounding_box.se.latitude}`;
 
     window
       .fetch(url, FETCH_OPTIONS)
@@ -230,6 +231,28 @@
         2;
     // 12742 is the diameter of earth in km
     return 12742 * Math.asin(Math.sqrt(a));
+  }
+
+  // Shoutout to ChatGPT
+  function boundingBox(coordinate, distance) {
+    const distanceInRadians = distance / 6371; // Earth's radius in kilometers
+
+    // Calculate bounding box coordinates
+    const latMin = coordinate.latitude - (distanceInRadians * (180 / Math.PI));
+    const latMax = coordinate.latitude + (distanceInRadians * (180 / Math.PI));
+    const lonMin = coordinate.longitude - (distanceInRadians * (180 / Math.PI) / Math.cos(coordinate.latitude * (Math.PI / 180)));
+    const lonMax = coordinate.longitude + (distanceInRadians * (180 / Math.PI) / Math.cos(coordinate.latitude * (Math.PI / 180)));
+
+    return {
+      nw: {
+        latitude: latMax,
+        longitude: lonMin
+      },
+      se: {
+        latitude: latMin,
+        longitude: lonMax
+      }
+    };
   }
 
   function getPurpleAirLink() {
