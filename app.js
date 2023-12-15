@@ -39,6 +39,7 @@
     try {
       const cachedSensors = window.localStorage.getItem("sensors");
       sensor_data = JSON.parse(cachedSensors);
+      console.log(sensor_data)
       if (sensor_data == null) {
         throw "Sensor data not cached";
       }
@@ -49,6 +50,11 @@
         throw "Sensor data is more than a day old";
       }
       sensor = findClosestSensor(sensor_data.data);
+
+      if (sensor.distance > 10) {
+        throw "Nearest sensor is over 10km away";
+      }
+
       updateWithSensor(sensor);
     } catch (exception) {
       console.log("Exception while reading cached sensor data");
