@@ -3,6 +3,11 @@
 
   let coord;
   let closestSensor;
+  const FETCH_OPTIONS = {
+    headers: {
+      "X-API-Key": "BA110377-679A-11EE-A8AF-42010A80000A",
+    }
+  }
 
   function onStart() {
     document.getElementById("powerwash").onclick = clearStorage;
@@ -37,13 +42,18 @@
       if (sensor_data == null) {
         throw "Sensor data not cached";
       }
-      if (sensor_data.version !== 1) {
+      if (sensor_data.version !== 2) {
         throw "Sensor data is the wrong version";
       }
       if (Date.now() > sensor_data.timestamp + 86400 * 1000) {
         throw "Sensor data is more than a day old";
       }
       sensor = findClosestSensor(sensor_data.data);
+
+      if (sensor.distance > 10) {
+        throw "Nearest sensor is over 10km away";
+      }
+
       updateWithSensor(sensor);
     } catch (exception) {
       console.log("Exception while reading cached sensor data");
@@ -59,11 +69,12 @@
   }
 
   function fetchSensorListAndShowAQI() {
+    bounding_box = boundingBox(coord, 10) // 10km bounding box
     const url =
-      "https://api.purpleair.com/v1/sensors?api_key=AA055D5D-E333-11EC-8561-42010A800005&fields=longitude,latitude&location_type=0&max_age=300";
+      `https://api.purpleair.com/v1/sensors?fields=longitude,latitude&location_type=0&max_age=300&nwlng=${bounding_box.nw.longitude}&nwlat=${bounding_box.nw.latitude}&selng=${bounding_box.se.longitude}&selat=${bounding_box.se.latitude}`;
 
     window
-      .fetch(url)
+      .fetch(url, FETCH_OPTIONS)
       .then((response) => response.json())
       .then((response) => {
         if (response.code && response.code >= 400 && response.message) {
@@ -79,10 +90,10 @@
 
   function updateWithSensor(sensor) {
     announceState("Getting sensor data");
-    const url = `https://api.purpleair.com/v1/sensors/${sensor.id}?api_key=AA055D5D-E333-11EC-8561-42010A800005&fields=pm2.5_10minute_a,pm2.5_10minute_b,humidity`;
+    const url = `https://api.purpleair.com/v1/sensors/${sensor.id}?fields=pm2.5_10minute_a,pm2.5_10minute_b,humidity`;
 
     window
-      .fetch(url)
+      .fetch(url, FETCH_OPTIONS)
       .then((response) => response.json())
       .then(updateAQI)
       .catch(purpleError);
@@ -127,7 +138,7 @@
       };
     }
 
-    setTimeout(() => getLocation(), 60000);
+    setTimeout(() => getLocation(), 300000);
   }
 
   function explainPermissionsRequest() {
@@ -227,12 +238,30 @@
     return 12742 * Math.asin(Math.sqrt(a));
   }
 
-  function getPurpleAirLink() {
-    return `https://www.purpleair.com/map?opt=1/i/mAQI/a0/cC5&select=${closestSensor.id}#14/${coord.latitude}/${coord.longitude}`;
+  // Shoutout to ChatGPT
+  function boundingBox(coordinate, distance) {
+    const distanceInRadians = distance / 6371; // Earth's radius in kilometers
+
+    // Calculate bounding box coordinates
+    const latMin = coordinate.latitude - (distanceInRadians * (180 / Math.PI));
+    const latMax = coordinate.latitude + (distanceInRadians * (180 / Math.PI));
+    const lonMin = coordinate.longitude - (distanceInRadians * (180 / Math.PI) / Math.cos(coordinate.latitude * (Math.PI / 180)));
+    const lonMax = coordinate.longitude + (distanceInRadians * (180 / Math.PI) / Math.cos(coordinate.latitude * (Math.PI / 180)));
+
+    return {
+      nw: {
+        latitude: latMax,
+        longitude: lonMin
+      },
+      se: {
+        latitude: latMin,
+        longitude: lonMax
+      }
+    };
   }
 
-  function aqanduAQIFromPM(pm) {
-    return aqiFromPM(0.778 * pm + 2.65);
+  function getPurpleAirLink() {
+    return `https://www.purpleair.com/map?opt=1/i/mAQI/a0/cC5&select=${closestSensor.id}#14/${coord.latitude}/${coord.longitude}`;
   }
 
   // From https://www.epa.gov/sites/default/files/2021-05/documents/toolsresourceswebinar_purpleairsmoke_210519b.pdf final slide
