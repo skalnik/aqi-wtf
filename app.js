@@ -138,7 +138,7 @@
       };
     }
 
-    setTimeout(() => getLocation(), 60000);
+    setTimeout(() => getLocation(), 300000);
   }
 
   function explainPermissionsRequest() {
