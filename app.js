@@ -6,8 +6,8 @@
   const FETCH_OPTIONS = {
     headers: {
       "X-API-Key": "BA110377-679A-11EE-A8AF-42010A80000A",
-    }
-  }
+    },
+  };
 
   function onStart() {
     document.getElementById("powerwash").onclick = clearStorage;
@@ -69,9 +69,8 @@
   }
 
   function fetchSensorListAndShowAQI() {
-    bounding_box = boundingBox(coord, 10) // 10km bounding box
-    const url =
-      `https://api.purpleair.com/v1/sensors?fields=longitude,latitude&location_type=0&max_age=300&nwlng=${bounding_box.nw.longitude}&nwlat=${bounding_box.nw.latitude}&selng=${bounding_box.se.longitude}&selat=${bounding_box.se.latitude}`;
+    bounding_box = boundingBox(coord, 10); // 10km bounding box
+    const url = `https://api.purpleair.com/v1/sensors?fields=longitude,latitude&location_type=0&max_age=300&nwlng=${bounding_box.nw.longitude}&nwlat=${bounding_box.nw.latitude}&selng=${bounding_box.se.longitude}&selat=${bounding_box.se.latitude}`;
 
     window
       .fetch(url, FETCH_OPTIONS)
@@ -243,20 +242,26 @@
     const distanceInRadians = distance / 6371; // Earth's radius in kilometers
 
     // Calculate bounding box coordinates
-    const latMin = coordinate.latitude - (distanceInRadians * (180 / Math.PI));
-    const latMax = coordinate.latitude + (distanceInRadians * (180 / Math.PI));
-    const lonMin = coordinate.longitude - (distanceInRadians * (180 / Math.PI) / Math.cos(coordinate.latitude * (Math.PI / 180)));
-    const lonMax = coordinate.longitude + (distanceInRadians * (180 / Math.PI) / Math.cos(coordinate.latitude * (Math.PI / 180)));
+    const latMin = coordinate.latitude - distanceInRadians * (180 / Math.PI);
+    const latMax = coordinate.latitude + distanceInRadians * (180 / Math.PI);
+    const lonMin =
+      coordinate.longitude -
+      (distanceInRadians * (180 / Math.PI)) /
+        Math.cos(coordinate.latitude * (Math.PI / 180));
+    const lonMax =
+      coordinate.longitude +
+      (distanceInRadians * (180 / Math.PI)) /
+        Math.cos(coordinate.latitude * (Math.PI / 180));
 
     return {
       nw: {
         latitude: latMax,
-        longitude: lonMin
+        longitude: lonMin,
       },
       se: {
         latitude: latMin,
-        longitude: lonMax
-      }
+        longitude: lonMax,
+      },
     };
   }
 
