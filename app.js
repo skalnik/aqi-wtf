@@ -39,11 +39,10 @@
     try {
       const cachedSensors = window.localStorage.getItem("sensors");
       sensor_data = JSON.parse(cachedSensors);
-      console.log(sensor_data)
       if (sensor_data == null) {
         throw "Sensor data not cached";
       }
-      if (sensor_data.version !== 1) {
+      if (sensor_data.version !== 2) {
         throw "Sensor data is the wrong version";
       }
       if (Date.now() > sensor_data.timestamp + 86400 * 1000) {
