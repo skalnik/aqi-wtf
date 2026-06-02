@@ -2,7 +2,7 @@ importScripts(
   "https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js"
 );
 
-let version = 1;
+let version = 2;
 
 let item = (path) => {
   return { url: path, revision: version };
