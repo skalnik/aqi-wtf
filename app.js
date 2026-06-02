@@ -229,7 +229,7 @@
       callToAction = `<a href='#' onclick='location.reload()'>Reload?</a> Or <a href="${paLink}">try PurpleAir's map</a>.`;
     } else {
       callToAction =
-        "You might want to try <a href='https://www.purpleair.com/map?opt=1/i/mAQI/a0/cC1#1/25/-30'>PurpleAir's map</a>.";
+        "You might want to try <a href='https://map.purpleair.com/1/mAQI/a10/p604800/cC0#1/25/-30'>PurpleAir's map</a>.";
     }
 
     announce(errorMsg, descMsg, callToAction);
@@ -355,7 +355,7 @@
   }
 
   function getPurpleAirLink() {
-    return `https://www.purpleair.com/map?opt=1/i/mAQI/a0/cC5&select=${closestSensor.id}#14/${coord.latitude}/${coord.longitude}`;
+    return `https://map.purpleair.com/1/mAQI/a10/p604800/cC0?select=${closestSensor.id}#14/${coord.latitude}/${coord.longitude}`;
   }
 
   // From https://www.epa.gov/sites/default/files/2021-05/documents/toolsresourceswebinar_purpleairsmoke_210519b.pdf final slide
