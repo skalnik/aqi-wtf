@@ -113,7 +113,11 @@
       pm25s.push(sensor.stats_b["pm2.5_10minute"]);
     }
 
-    const pm25 = pm25s.reduce((a, b) => a + b) / pm25s.length;
+    // Both channels can read exactly 0.0 (e.g. very clean air), which leaves
+    // pm25s empty. Default to 0 in that case rather than reducing an empty array.
+    const pm25 = pm25s.length
+      ? pm25s.reduce((a, b) => a + b, 0) / pm25s.length
+      : 0;
     const aqi = epaAQIFromPMandHumidity(pm25, humidity);
 
     const distance = Math.round(closestSensor.distance * 10) / 10;
