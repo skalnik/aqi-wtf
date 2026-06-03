@@ -3,11 +3,21 @@
 
   let coord;
   let closestSensor;
+  let sortedSensors;
+  let sensorIndex;
   const FETCH_OPTIONS = {
     headers: {
       "X-API-Key": "BA110377-679A-11EE-A8AF-42010A80000A",
     },
   };
+
+  const CHANNEL_A = 1;
+  const CHANNEL_B = 2;
+  // PurpleAir's confidence score (0-100) measures how well the two channels
+  // agree. 30 is the default it returns when there isn't enough data, so we
+  // treat anything below this as too unreliable and move to the next sensor.
+  // https://community.purpleair.com/t/how-the-confidence-score-is-calculated/10641
+  const MIN_CONFIDENCE = 50;
 
   function onStart() {
     document.getElementById("powerwash").onclick = clearStorage;
@@ -48,13 +58,13 @@
       if (Date.now() > sensor_data.timestamp + 86400 * 1000) {
         throw "Sensor data is more than a day old";
       }
-      sensor = findClosestSensor(sensor_data.data);
+      const sensors = sortSensorsByDistance(sensor_data.data);
 
-      if (sensor.distance > 10) {
+      if (sensors[0].distance > 10) {
         throw "Nearest sensor is over 10km away";
       }
 
-      updateWithSensor(sensor);
+      startAQIFromSensors(sensors);
     } catch (exception) {
       console.log("Exception while reading cached sensor data");
       console.log(exception);
@@ -82,14 +92,14 @@
         return response;
       })
       .then(parsePurpleAirData)
-      .then(findClosestSensor)
-      .then(updateWithSensor)
+      .then(sortSensorsByDistance)
+      .then(startAQIFromSensors)
       .catch(purpleError);
   }
 
   function updateWithSensor(sensor) {
     announceState("Getting sensor data");
-    const url = `https://api.purpleair.com/v1/sensors/${sensor.id}?fields=pm2.5_10minute_a,pm2.5_10minute_b,humidity`;
+    const url = `https://api.purpleair.com/v1/sensors/${sensor.id}?fields=pm2.5_10minute_a,pm2.5_10minute_b,humidity,confidence,channel_state,channel_flags`;
 
     window
       .fetch(url, FETCH_OPTIONS)
@@ -98,22 +108,22 @@
       .catch(purpleError);
   }
 
-  function updateAQI(sensor) {
-    sensor = sensor.sensor;
+  function updateAQI(response) {
+    const sensor = response.sensor;
     announceState("Calculating AQI");
 
-    const humidity = sensor.humidity;
-    let pm25s = [];
+    const pm25 = sensor ? averageChannelPM25(sensor) : null;
 
-    if (sensor.stats_a["pm2.5_10minute"] !== 0.0) {
-      pm25s.push(sensor.stats_a["pm2.5_10minute"]);
+    // A null result means this sensor has no usable data Fall back to the
+    // next-nearest sensor instead of giving up.
+    if (pm25 === null) {
+      tryNextSensor();
+      return;
     }
 
-    if (sensor.stats_b["pm2.5_10minute"] !== 0.0) {
-      pm25s.push(sensor.stats_b["pm2.5_10minute"]);
-    }
-
-    const pm25 = pm25s.reduce((a, b) => a + b) / pm25s.length;
+    // Humidity drives the EPA correction. If the sensor doesn't report it, fall
+    // back to a neutral 50% so we still produce a sensible AQI instead of NaN.
+    const humidity = Number.isFinite(sensor.humidity) ? sensor.humidity : 50;
     const aqi = epaAQIFromPMandHumidity(pm25, humidity);
 
     const distance = Math.round(closestSensor.distance * 10) / 10;
@@ -138,6 +148,54 @@
     }
 
     setTimeout(() => getLocation(), 300000);
+  }
+
+  // Average the usable channels (A and B). Returns null when the sensor can't
+  // be trusted
+  function averageChannelPM25(sensor) {
+    // Overall confidence too low to trust either channel.
+    if (
+      Number.isFinite(sensor.confidence) &&
+      sensor.confidence < MIN_CONFIDENCE
+    ) {
+      return null;
+    }
+
+    const values = [
+      channelReading(sensor, sensor.stats_a, CHANNEL_A),
+      channelReading(sensor, sensor.stats_b, CHANNEL_B),
+    ].filter((value) => value !== null);
+
+    if (values.length === 0) {
+      return null;
+    }
+
+    return values.reduce((a, b) => a + b, 0) / values.length;
+  }
+
+  function channelReading(sensor, stats, channelBit) {
+    const value = stats && stats["pm2.5_10minute"];
+    if (!Number.isFinite(value)) {
+      return null;
+    }
+
+    // Channel must be one of those currently reporting.
+    if (
+      Number.isFinite(sensor.channel_state) &&
+      (sensor.channel_state & channelBit) === 0
+    ) {
+      return null;
+    }
+
+    // Channel must not be flagged as downgraded/faulty.
+    if (
+      Number.isFinite(sensor.channel_flags) &&
+      (sensor.channel_flags & channelBit) !== 0
+    ) {
+      return null;
+    }
+
+    return value;
   }
 
   function explainPermissionsRequest() {
@@ -171,7 +229,7 @@
       callToAction = `<a href='#' onclick='location.reload()'>Reload?</a> Or <a href="${paLink}">try PurpleAir's map</a>.`;
     } else {
       callToAction =
-        "You might want to try <a href='https://www.purpleair.com/map?opt=1/i/mAQI/a0/cC1#1/25/-30'>PurpleAir's map</a>.";
+        "You might want to try <a href='https://map.purpleair.com/1/mAQI/a10/p604800/cC0#1/25/-30'>PurpleAir's map</a>.";
     }
 
     announce(errorMsg, descMsg, callToAction);
@@ -191,16 +249,47 @@
     }
   }
 
-  function findClosestSensor(sensors) {
+  function sortSensorsByDistance(sensors) {
     for (const sensor of sensors) {
       const distance = distanceBetweenCoords(coord, sensor);
       sensor.distance = distance;
     }
 
     sensors.sort((a, b) => a.distance - b.distance);
-    closestSensor = sensors[0];
 
-    return closestSensor;
+    return sensors;
+  }
+
+  // Kick off the AQI lookup against the nearest sensor, keeping the full sorted
+  // list around so we can fall back to the next one if a sensor has no data.
+  function startAQIFromSensors(sensors) {
+    sortedSensors = sensors;
+    sensorIndex = 0;
+    tryCurrentSensor();
+  }
+
+  function tryCurrentSensor() {
+    // Skip anything beyond our 10km radius; the list is sorted, so once we're
+    // past it every remaining sensor is too far.
+    if (
+      sensorIndex >= sortedSensors.length ||
+      sortedSensors[sensorIndex].distance > 10
+    ) {
+      closestSensor = null;
+      announceError(
+        "Nearby sensors are taking a nap 😴",
+        "Couldn't find a PurpleAir sensor within 10km with recent data."
+      );
+      return;
+    }
+
+    closestSensor = sortedSensors[sensorIndex];
+    updateWithSensor(closestSensor);
+  }
+
+  function tryNextSensor() {
+    sensorIndex++;
+    tryCurrentSensor();
   }
 
   function parsePurpleAirData(json) {
@@ -266,7 +355,7 @@
   }
 
   function getPurpleAirLink() {
-    return `https://www.purpleair.com/map?opt=1/i/mAQI/a0/cC5&select=${closestSensor.id}#14/${coord.latitude}/${coord.longitude}`;
+    return `https://map.purpleair.com/1/mAQI/a10/p604800/cC0?select=${closestSensor.id}#14/${coord.latitude}/${coord.longitude}`;
   }
 
   // From https://www.epa.gov/sites/default/files/2021-05/documents/toolsresourceswebinar_purpleairsmoke_210519b.pdf final slide
